@@ -26,6 +26,7 @@ typedef struct{
 /** @brief resets all the bits of the iRegister (to 0)
  * 
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return void
  * 
  *  Pre-condition: iRegister != Null
@@ -53,7 +54,9 @@ void resetAll(iRegister *);
 /** @brief sets the i'th bit of the iRegister (to 1)
  * 
  *  @param i The bit in the iRegister that will be set (to 1).
+ *
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return void
  * 
  *  Pre-condition: 0 <= i < 32 and iRegister != Null
@@ -80,6 +83,7 @@ void setBit(int, iRegister *);
 /** @brief setAll() the bits of the iRegister (to 1)
  * 
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return void
  * 
  *  Pre-condition: iRegister != Null
@@ -107,7 +111,9 @@ void setAll(iRegister *);
 /** @brief returns the i'th bit of the iRegister as an integer (1 if it is set, or 0 otherwise)
  * 
  *  @param i is the bit in the iRegister that will be return.
+ *
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return int (current state of the bit)
  * 
  *  Pre-condition: 0 <= i < 32 and iRegister != Null
@@ -129,49 +135,52 @@ void setAll(iRegister *);
 int getBit(int, iRegister *);
 
 
-
 /** @brief set the first (for pos=1) or the second (for pos=2) four bits of iRegsiter
  * 
  *  @param start is the lowest bit (position 1) 
- *  @param end is the highest bit (position 2)
  *
- *  @param start First
- *  @param end
+ *  @param value value of Nibble
+ *
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return void
  * 
- *  Pre-condition: 0 <= i < 32 and iRegister != Null
- *  Post-condition: ?
+ *  Pre-condition: 0 <= start < 29, value != Null, 0 <= value < 16 and iRegister != Null
+ *  Post-condition: iRegister != Null
  *  
- *  properties: 
+ *  properties: After assignNibble(start,value,r). getNibble(start, r) = value 
  *  
- *  test-cases: 
+ *  test-cases:
+ *  1. Wrong input
+ *  - assignNibble(33, 4, r)
+ *  - Should return with error
+ *  2. Validate insert
+ *  - assignNibble(0,7,r)
+ *  - getNibble(0,r) should be = 7
  */ 
 void assignNibble(int, int, iRegister *);
 
 
 /** @brief get the first (for pos=1) or the second (for pos=2) four bits of iRegsiter
  * 
- *  @param i is the highest bit .....?
+ *  @param i start bit
  *
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return int (current state of that nibble)
  * 
  *  Pre-condition: 0 <= i < 32 and iRegister != Null
- *  Post-condition: ?
+ *  Post-condition: iRegister != Null
  *  
- *  properties: 
- *  
- *  
- *   
- *  
- * 
- *  test-cases: 
- *  
- *  
- *  
- *  
- *   
+ *  properties: 0 <= getNibble(i,r) < 15, getNibble(i,r) != Null
+ *    
+ *  test-cases:
+ *  1. Get the correct Nibble
+ *  - assignNibble(0,7,r)
+ *  - print getNibble(0,r) to verify value is ...XXXX0111
+ *  2. Index out of range
+ *  - getNibble(30,r)
+ *  - should return and provide error due to index > 29
  */ 
 int getNibble(int, iRegister *);
 
@@ -190,10 +199,11 @@ char *reg2str(iRegister);
  *  @param i is the amount of left-shift that will be performed
  *
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return void
  * 
  *  Pre-condition: 0 <= i < 32 and iRegister != Null
- *  Post-condition: ?
+ *  Post-condition: iRegister != Null
  *  
  *  properties: reg2str(r) = 00000010, After shiftRight(1,r), reg2str(r) = 00000001. Division by two
  *
@@ -220,10 +230,11 @@ void shiftRight(int, iRegister *);
  *  @param i is the amount of left-shift that will be performed
  *
  *  @param r A pointer to a memory location of a iRegister data structure.
+ *
  *  @return void
  * 
  *  Pre-condition: 0 <= i < 32 and iRegister != Null
- *  Post-condition: ?
+ *  Post-condition: iRegister != Null
  *  
  *  properties: reg2str(r) = 00000001, After shiftLeft(1,r), reg2str(r) = 00000010. Multiplication by two
  *
@@ -250,11 +261,10 @@ void shiftLeft(int, iRegister *);
  * 
  *  Post-condition: after reset(i, r) the i'th bit of iRegister is 0, all other 
  *  bits remain unchanged
+ *
  *  properties: 
  *  after resetBit(i, r),  getBit(i, r) = 0
- *  if getBit(i, r) == 0 then  
- *    getBit(j, r) returns the same value for all 
- *  0 <= j < 32 and j <> i before and after resetBit(i, r)
+ *  if getBit(i, r) == 0 then getBit(j, r) returns the same value for all 0 <= j < 32 and j <> i before and after resetBit(i, r)
  * 
  *  test-cases: 
  *  1,2,3. Allocate memory to an iRegister r
