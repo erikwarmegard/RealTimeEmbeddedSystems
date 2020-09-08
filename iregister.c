@@ -14,5 +14,11 @@ void resetBit(int i, iRegister *r) {
 
 void resetAll(iRegister *r){
  if(r==Null) return;
+ //fetch the register r into a variable
+ //AND OperATION: with 0 in all 32 bit => to clear them
+ //insert the value in r 
  
 }
+
+
+void setBit(int, iRegister *);
