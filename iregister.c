@@ -10,3 +10,9 @@
 void resetBit(int i, iRegister *r) {
   r->content &= ~(1 << i);
 }
+
+
+void resetAll(iRegister *r){
+ if(r==Null) return;
+ 
+}

@@ -15,7 +15,7 @@ REMEMBER: C declarations and macro definitions are placed in a header file (.h).
   
 2. IMPLEMENTING FUNCTIONS IN iRegister.c file: Refer to the iRegister.h file, where the declaration and purpose of each function is given. As it is, the iRegister.c file contains an example of the implementation of the resetBit function.
  2.1 implement all functions declared at iRegister.h in the iRegister.c file
- 
+ -
 3. IMPLEMENTING TESTCASES IN main.c.
 
 4. COMPILING AND EXECUTING: Compile and link iregister.c and main.c and run main.
