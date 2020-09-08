@@ -190,7 +190,7 @@ int getNibble(int, iRegister *);
  *  then the character is "1" (ASCII char with code 49), or otherwise is "0" 
  *  (ASCII char with code 48)
  */
-char *reg2str(iRegister);
+char *reg2str(iRegister *);
 
 
 /** @brief shifts all the bits of the iRegister to the right by n palces (appends 0 

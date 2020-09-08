@@ -10,10 +10,7 @@
 
 void resetAll(iRegister *r){
 	if (r == Null) return;
-	//fetch the register r into a variable
-	//AND OperATION: with 0 in all 32 bit => to clear them
-	//insert the value in r 
-
+	r->content &= (0 << 0); // Mask all bits in register with 0
 }
 
 
@@ -25,7 +22,7 @@ void setBit(int i, iRegister *r){
 
 void setAll(iRegister *r) {
 	if (r == Null) return;
-	r->content |= ~(r->content << 32); // Shift all bits 32 steps, makes them 0. Then invert for all 1's
+	r->content |= ~(0 << 0); // OR all bits with 1
 }
 
 
@@ -36,16 +33,36 @@ int getBit(int i, iRegister r*) {
 }
 
 
-// TODO
-void assignNibble(int start, int end, iRegister *r) {}
+// Might be false, verify with test
+void assignNibble(int start, int value, iRegister *r) {
+	if(start > 29) return;
+	if (r == Null) return;
+	r->content &= ~(15 << start); 
+	r->content |= (value << start);
+}
 
 
-// TODO
-int get Nibble(int i, iRegister *r) {}
+int getNibble(int start, iRegister *r) {
+	if(start > 29) return;
+	if (r == Null) return;
+	return ((r->content) & ( 15 << start )) >> start;
+}
 
 
-//TODO
-char *reg2str(iRegister) {}
+//FIXME: Will eventually fill up all memory space if called too much.
+char *reg2str(iRegister *r) {
+	register = (char*) malloc(sizeof(char) * 32);
+	
+	int i;
+	
+	for(i = 0; i < 31){
+		if(getBit(i,r)){
+			register[i] = 49;
+		} else register[i] = 48;
+	}
+	
+	return register;
+}
 
 
 void shiftRight(int i, iRegister *r) {
@@ -62,7 +79,7 @@ void shiftLeft(int, iRegister *r) {
 }
 
 
-
 void resetBit(int i, iRegister *r) {
+	if (r == Null) return;
 	r->content &= ~(1 << i);
 }
