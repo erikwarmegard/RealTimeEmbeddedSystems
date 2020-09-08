@@ -25,7 +25,7 @@ void setBit(int i, iRegister *r){
 
 void setAll(iRegister *r) {
 	if (r == Null) return;
-	r->content |= ~(content << 32); // Shift all bits 32 steps, makes them 0. Then invert for all 1's
+	r->content |= ~(r->content << 32); // Shift all bits 32 steps, makes them 0. Then invert for all 1's
 }
 
 
