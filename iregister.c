@@ -21,4 +21,7 @@ void resetAll(iRegister *r){
 }
 
 
-void setBit(int, iRegister *);
+void setBit(int i, iRegister *r){
+ if(r==Null) return;
+ r->content |= ~(1 << i);	
+}
