@@ -25,15 +25,43 @@ void setBit(int i, iRegister *r){
 
 void setAll(iRegister *r) {
 	if (r == Null) return;
-	r->content |= ~(content << 32); //Shift all bits 32 steps, makes them 0. Then invert for all 1's
+	r->content |= ~(content << 32); // Shift all bits 32 steps, makes them 0. Then invert for all 1's
 }
 
 
 int getBit(int i, iRegister r*) {
 	if (i > 31 || i < 0) return;
 	if (r == Null) return;
-	// TODO: Return statement here 
+	return ((r->content) & ( 1 << i )) >> i; // Mask out the bit, then shift it to the far right so it gets returned as the integer
 }
+
+
+// TODO
+void assignNibble(int start, int end, iRegister *r) {}
+
+
+// TODO
+int get Nibble(int i, iRegister *r) {}
+
+
+//TODO
+char *reg2str(iRegister) {}
+
+
+void shiftRight(int i, iRegister *r) {
+	if (i > 31 || i < 0) return;
+	if (r == Null) return;
+	r->content = (r->content >> i);
+}
+
+
+void shiftLeft(int, iRegister *r) {
+	if (i > 31 || i < 0) return;
+	if (r == Null) return;
+	r->content = (r->content << i);
+}
+
+
 
 void resetBit(int i, iRegister *r) {
 	r->content &= ~(1 << i);
