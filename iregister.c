@@ -15,8 +15,9 @@ void resetAll(iRegister *r){
 
 
 void setBit(int i, iRegister *r){
+	if ((i > 31) | (i < 0)) return;
 	if (r == NULL) return;
-	r->content |= ~(1 << i);	
+	r->content |= (1 << i);	
 }
 
 
@@ -56,7 +57,7 @@ char *reg2str(iRegister *r) {
 	
 	int i;
 	
-	for(i = 0; i < 31; i++){
+	for(i = 0; i < 32; i++){
 		if(getBit(i,r)){
 			reg[i] = 49;
 		} else reg[i] = 48;
