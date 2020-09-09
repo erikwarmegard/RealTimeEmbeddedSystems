@@ -14,6 +14,18 @@ int main ()
 
   /* Put all your test cases for the implemented functions here */
 
+ //resetAll()
+ setAll(&r);
+ resetAll(&r)
+ int i;
+ for(i=0; i<32;i++){
+   if(getBit(i,&r)!=0){
+    	printf("error")
+	break;
+   }
+}
+
+
   printf ("\n");
   return 0;
 }
