@@ -9,77 +9,78 @@
 
 
 void resetAll(iRegister *r){
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content &= (0 << 0); // Mask all bits in register with 0
 }
 
 
 void setBit(int i, iRegister *r){
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content |= ~(1 << i);	
 }
 
 
 void setAll(iRegister *r) {
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content |= ~(0 << 0); // OR all bits with 1
 }
 
 
-int getBit(int i, iRegister r*) {
-	if (i > 31 || i < 0) return;
-	if (r == Null) return;
+int getBit(int i, iRegister *r) {
+	if ((i > 31) | (i < 0)) return -1;
+	if (r == NULL) return -1;
 	return ((r->content) & ( 1 << i )) >> i; // Mask out the bit, then shift it to the far right so it gets returned as the integer
 }
+
 
 
 // Might be false, verify with test
 void assignNibble(int start, int value, iRegister *r) {
 	if(start > 29) return;
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content &= ~(15 << start); 
 	r->content |= (value << start);
 }
 
 
 int getNibble(int start, iRegister *r) {
-	if(start > 29) return;
-	if (r == Null) return;
+	if(start > 29) return -1;
+	if (r == NULL) return -1;
 	return ((r->content) & ( 15 << start )) >> start;
 }
 
 
 //FIXME: Will eventually fill up all memory space if called too much.
 char *reg2str(iRegister *r) {
-	register = (char*) malloc(sizeof(char) * 32);
+	char *reg = (char*) malloc(sizeof(char) * 32);
 	
 	int i;
 	
-	for(i = 0; i < 31){
+	for(i = 0; i < 31; i++){
 		if(getBit(i,r)){
-			register[i] = 49;
-		} else register[i] = 48;
+			reg[i] = 49;
+		} else reg[i] = 48;
 	}
 	
-	return register;
+	return reg;
 }
 
 
 void shiftRight(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content = (r->content >> i);
 }
 
 
-void shiftLeft(int, iRegister *r) {
+void shiftLeft(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content = (r->content << i);
 }
 
 
 void resetBit(int i, iRegister *r) {
-	if (r == Null) return;
+	if (r == NULL) return;
 	r->content &= ~(1 << i);
 }
