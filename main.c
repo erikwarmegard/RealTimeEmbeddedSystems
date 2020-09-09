@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h> 
 #include "iregister.h"
 
 int main ()
@@ -13,19 +14,20 @@ int main ()
   char out[33];
 
   /* Put all your test cases for the implemented functions here */
-
- //resetAll()
- setAll(&r);
- resetAll(&r)
- int i;
- for(i=0; i<32;i++){
-   if(getBit(i,&r)!=0){
-    	printf("error")
-	break;
-   }
-}
-
-
+  
+  /* TEST: setAll(iRegister *r)*/
+  setAll(&r);
+  assert(r.content == (-1));
+ 
+  /* TEST: resetAll(iRegister *r)*/
+  r.content = (-1);
+  assert(r.content == (-1));
+  resetAll(&r);
+  assert(r.content == 0);
+  
+  
+  
+  
   printf ("\n");
   return 0;
 }
