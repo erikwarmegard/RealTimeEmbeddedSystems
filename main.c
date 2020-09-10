@@ -153,7 +153,7 @@ int main ()
   assert(aNibble == 15);
   /* 3. Try to get nibble out of range */
   r.content = 0;
-  assert(getNibble(33, &r) == -1);
+  assert(getNibble(33, &r) == NULL);
   /* 4. Get nibble, all other bits should remain unchanged */
   r.content = 0; 
   r.content = 0x000000F0;
