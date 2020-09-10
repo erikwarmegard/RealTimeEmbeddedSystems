@@ -28,9 +28,13 @@ void setAll(iRegister *r) {
 
 
 int getBit(int i, iRegister *r) {
-	if ((i > 31) | (i < 0)) return -1;
-	if (r == NULL) return -1;
-	return ((r->content) & ( 1 << i )) >> i; // Mask out the bit, then shift it to the far right so it gets returned as the integer
+        if (r == NULL) {
+          return -1;
+        }
+	else if (i >= 32 || i < 0) {
+          return -1;
+        }
+	else return (unsigned int) ((r->content) & ( 1 << i )) >> i; // Mask out the bit, then shift it to the far right so it gets returned as the integer
 }
 
 
@@ -87,6 +91,7 @@ void shiftLeft(int i, iRegister *r) {
 
 
 void resetBit(int i, iRegister *r) {
+        if (i > 31 || i < 0) return;
 	if (r == NULL) return;
 	r->content &= ~(1 << i);
 }
