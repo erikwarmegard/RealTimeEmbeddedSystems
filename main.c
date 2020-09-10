@@ -120,8 +120,9 @@ int main ()
   theValue = 14;
   assignNibble(startBit, theValue, &r);
   theNibble = NULL;
-  theNibble = (r.content & (theValue << startBit));
-  assert(theNibble == (theValue << startBit));
+  theNibble = (unsigned)(r.content & (theValue << startBit));
+  theNibble = (theNibble >> startBit);
+  assert(theNibble == theValue);
   /* 3. Assign with all zeros */
   r.content = 0;
   startBit = 4;
@@ -161,8 +162,7 @@ int main ()
   resetAll(&r);
   assignNibble(23,15,&r);
   char *pointer = reg2str(&r);
-  
-  
+ 
   char *end = pointer + 31;
   char *index = pointer;
   int i = 31; //used to format printf
@@ -171,12 +171,11 @@ int main ()
     i--;
     end--;
   }
-  /*Test 4. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
-  /*Test 3. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
   /*Test 2. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
+  /*Test 3. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
+  /*Test 4. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
   
-  
-  /* TEST: shiftRight(int i, iRegister *r) */
+  /* TEST: shiftRight(int i, iRegister *r)  JOHAN -precis klar*/ 
   /* 1. Logic control, division by two */
   resetAll(&r);
   int oldValue = r.content = (1 << 3);
@@ -190,6 +189,21 @@ int main ()
   int MSB = r.content & (1 << 31);
   MSB = MSB >> 31;
   assert(MSB == 0);
+  
+  /*3. If  you  want to right shift: 32+ steps => Do nothing (r is unchanged)*/
+  int registerBefore =r.content;
+  int registerAfterwards =0;
+  shiftRight(32, &r);
+  registerAfterwards = r.content;
+  assert(registerAfterwards==registerBefore);
+  
+  /*4. If  you  want to right shift, less than: (-1) steps => Do nothing (r is unchanged)*/
+  registerBefore =r.content;
+  registerAfterwards =0;
+  shiftRight(-1, &r);
+  registerAfterwards = r.content;
+  assert(registerAfterwards==registerBefore);  
+  
   
   /* TEST: shiftLeft(int i, iRegister *r) */
   /* 1. Logic control, multiplication by two */
@@ -207,8 +221,22 @@ int main ()
   int LSB = r.content & (1 << 0);
   assert(LSB == 0);
   
+  /*3. If  you  want to left shift: 32+ steps => Do nothing */
+  registerBefore =0; //declared above
+  registerAfterwards =0;
+  registerBefore = r.content;
+  shiftLeft(32,&r);
+  registerAfterwards = r.content;
+  assert(registerAfterwards==registerBefore);
+  /*4. If  you  want to left shift, less than: (-1) steps => Do nothing */
+  registerBefore = r.content;
+  shiftLeft(-1,&r);
+  registerAfterwards = r.content;
+  assert(registerAfterwards==registerBefore);
+  
   
   /* TEST: resetBit(int i, iRegister *r) */
+  //TEST 1. Set everything to 1:s, than reset the i'th bit
   r.content |= ~(0 << 32);
   int bitToReset = 8;
   resetBit(bitToReset, &r);
@@ -216,8 +244,20 @@ int main ()
   theBit = (r.content &(1 << bitToReset)); 
   theBit = theBit >> bitToReset;
   assert(theBit==0);
+  //TEST 2. i input, bigger than 31 => should not change the content r.content
+  int beforeValue = r.content;
+  resetBit(33,&r);
+  int afterValue =r.content;
+  assert(beforeValue==afterValue);
+      //assert(resetBit(33,&r)==-1); 
   
-  
+  //TEST 3. input i= -1 < 0: => does not result in a change of r.content
+  beforeValue = r.content;
+  resetBit(-1,&r);
+  afterValue =r.content;
+  assert(beforeValue==afterValue); //r.content should stay the same
+   //TEST 4. ?
+   
   printf ("\n");
   return 0;
 }
