@@ -38,8 +38,6 @@ int getBit(int i, iRegister *r) {
 }
 
 
-
-// Might be false, verify with test
 void assignNibble(int start, int value, iRegister *r) {
 	if(start > 29) return;
 	if (r == NULL) return;
@@ -51,7 +49,7 @@ void assignNibble(int start, int value, iRegister *r) {
 int getNibble(int start, iRegister *r) {
 	if(start > 29) return -1;
 	if (r == NULL) return -1;
-	return ((r->content) & ( 15 << start )) >> start;
+	return ((r->content) & ((unsigned) 15 << start )) >> start;
 }
 
 

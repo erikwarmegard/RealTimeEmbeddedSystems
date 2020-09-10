@@ -142,9 +142,22 @@ int main ()
   assert(theNibble == theValue);
   
   /* TEST: getNibble(int start, iRegister *r) */
-  resetAll(&r);
+  /* 1. Get the first nibble */
+  r.content = 0;
   r.content = (15 << 4);
-  assert(getNibble(4, &r) == 15);
+  assert(getNibble(4,&r) == 15);
+  /* 2. Get the last nibble */
+  r.content = 0xF0000000;
+  int aNibble = getNibble(28,&r);
+  assert(aNibble == 15);
+  /* 3. Try to get nibble out of range */
+  r.content = 0;
+  assert(getNibble(33, &r) == -1);
+  /* 4. Get nibble, all other bits should remain unchanged */
+  r.content = 0; 
+  r.content = 0x000000F0;
+  getNibble(4,&r);
+  assert(r.content == 0x000000F0);
   
   // TODO: Make this with assert, if possible
   /* TEST: reg2str(iRegister *r) */
