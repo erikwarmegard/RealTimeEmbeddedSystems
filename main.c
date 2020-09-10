@@ -142,12 +142,22 @@ int main ()
   assert(theNibble == theValue);
   
   /* TEST: getNibble(int start, iRegister *r) */
+  /*TEST 1. resetBits => sets the second nibble to 0xF=1111 and checks with it's correct*/
   resetAll(&r);
   r.content = (15 << 4);
   assert(getNibble(4, &r) == 15);
+  /*TEST 2*/
   
-  // TODO: Make this with assert, if possible
-  /* TEST: reg2str(iRegister *r) */
+  /*TEST 3 trying to get/access the a Nibble, outside the 32 bit: you will get: NULL*/
+  assert(getNibble(33, &r) == NULL);
+  
+  
+  /*TEST 4 inputing start < 0 will result in no change att all*/
+  assert(getNibble(-1, &r) == NULL);
+  
+  
+  /* TEST: reg2str(iRegister *r) */ //TODO: Make this with assert, if possible
+  /*Test 1. Test by printing the characters at the pointer location*/
   resetAll(&r);
   assignNibble(23,15,&r);
   char *pointer = reg2str(&r);
@@ -155,13 +165,15 @@ int main ()
   
   char *end = pointer + 31;
   char *index = pointer;
-  
-  int i = 31;
+  int i = 31; //used to format printf
   while(end >= index) {
     printf("%d: %c\n",i,*end);
     i--;
     end--;
   }
+  /*Test 4. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
+  /*Test 3. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
+  /*Test 2. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
   
   
   /* TEST: shiftRight(int i, iRegister *r) */

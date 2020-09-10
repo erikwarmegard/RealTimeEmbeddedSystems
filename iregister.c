@@ -49,8 +49,8 @@ void assignNibble(int start, int value, iRegister *r) {
 
 
 int getNibble(int start, iRegister *r) {
-	if(start > 29) return -1;
-	if (r == NULL) return -1;
+	if(start > 29 || start < 0) return NULL;
+	if (r == NULL) return NULL;
 	return ((r->content) & ( 15 << start )) >> start;
 }
 
