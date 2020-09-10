@@ -147,7 +147,7 @@ int main ()
   r.content = (15 << 4);
   assert(getNibble(4, &r) == 15);
   
-  // TODO: Make this with assert, if possible
+  // TODO: Make this with assert, if its possible
   /* TEST: reg2str(iRegister *r) */
   resetAll(&r);
   assignNibble(23,15,&r);
