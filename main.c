@@ -84,7 +84,7 @@ int main ()
   /* 2. MSB should be 0 */
   resetAll(&r);
   shiftRight(31, &r);
-  unsigned int MSB = r.content & (1 << 31);
+  int MSB = r.content & (1 << 31);
   MSB = MSB >> 31;
   assert(MSB == 0);
   
@@ -101,7 +101,7 @@ int main ()
   /* 2. LSB should be 0*/
   r.content |= ~(0 << 32);
   shiftLeft(31, &r);
-  unsigned int LSB = r.content & (1 << 0);
+  int LSB = r.content & (1 << 0);
   assert(LSB == 0);
   
   
@@ -118,3 +118,4 @@ int main ()
   printf ("\n");
   return 0;
 }
+s

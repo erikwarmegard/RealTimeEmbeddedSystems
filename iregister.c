@@ -67,10 +67,15 @@ char *reg2str(iRegister *r) {
 }
 
 
+// Note: added the loop to prevent added 1s
 void shiftRight(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
 	if (r == NULL) return;
-	r->content = (r->content >> i);
+	
+        r->content = r->content >> i;
+        for(int j = 0; j < i; j++){
+          resetBit(31-j ,r);
+        }
 }
 
 
