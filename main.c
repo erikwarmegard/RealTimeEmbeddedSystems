@@ -120,8 +120,8 @@ int main ()
   theValue = 14;
   assignNibble(startBit, theValue, &r);
   theNibble = NULL;
-  theNibble = (unsigned)(r.content & (theValue << startBit));
-  theNibble = (theNibble >> startBit);
+  theNibble = (r.content & (theValue << startBit));
+  theNibble = ((unsigned)theNibble >> startBit);
   assert(theNibble == theValue);
   /* 3. Assign with all zeros */
   r.content = 0;
@@ -249,7 +249,6 @@ int main ()
   resetBit(33,&r);
   int afterValue =r.content;
   assert(beforeValue==afterValue);
-      //assert(resetBit(33,&r)==-1); 
   
   //TEST 3. input i= -1 < 0: => does not result in a change of r.content
   beforeValue = r.content;
@@ -257,6 +256,12 @@ int main ()
   afterValue =r.content;
   assert(beforeValue==afterValue); //r.content should stay the same
    //TEST 4. ?
+   r.content =0x0;
+   resetBit(3,&r);
+   assert((r.content &(1 << 2))==0); // the 3:rd bit should we 0 not 1
+   for(int i=0; i<32; i++){
+     assert((r.content &(1 << i))==0);
+   }
    
   printf ("\n");
   return 0;
