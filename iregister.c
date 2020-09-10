@@ -87,6 +87,7 @@ void shiftLeft(int i, iRegister *r) {
 
 
 void resetBit(int i, iRegister *r) {
+        if (i > 31 || i < 0) return;
 	if (r == NULL) return;
 	r->content &= ~(1 << i);
 }
