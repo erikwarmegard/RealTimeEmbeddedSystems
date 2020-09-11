@@ -46,7 +46,7 @@ typedef struct{
  *  - resetAll(&r)
  *  - assert that all bits remain as 0
  *  3. iRegister is NULL
- *  
+ *  - resetAll(NULL) should not resolve in error
  *  4. Half of the bits are set from the start
  *  - set half the bits to 1 (r.content = 0xFFFF0000)
  *  - resetAll(&r)
@@ -117,7 +117,8 @@ void setBit(int, iRegister *);
  *  - set half of the bits in the register
  *  - setAll(&r)
  *  - assert that all bits are set
- *  4. 
+ *  4. iRegister is NULL
+ *  - resetAll(NULL) should not resolve in error
  */ 
 void setAll(iRegister *);
 

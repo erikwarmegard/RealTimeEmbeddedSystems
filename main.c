@@ -26,6 +26,8 @@ int main ()
   resetAll(&r);
   assert(r.content == 0);
   /* 3. iRegister is NULL */
+  resetAll(NULL);
+  // Should not resolve in error!
   
   /* 4. Half of the bits are set from start*/
   r.content = 0xFFFF0000;
@@ -45,7 +47,9 @@ int main ()
   r.content = 0xFFFF0000;
   setAll(&r);
   assert(r.content == 0xFFFFFFFF);
-  /* 4. */
+  /* 4. iRegister is NULL */
+  setAll(NULL);
+  // Should not resolve in error
  
   
   /* TEST: setBit(int i, iRegister *r) */
