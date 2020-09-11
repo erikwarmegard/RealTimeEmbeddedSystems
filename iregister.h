@@ -247,18 +247,27 @@ char *reg2str(iRegister *);
  *  properties: reg2str(r) = 00000010, After shiftRight(1,r), reg2str(r) = 00000001. Division by two
  *
  *  test-cases: 
- *  1. Division by two
- *  - Allocate memory for iRegister r
- *  - setBit(3,r)
- *  - printf() to verify that register equals "8"
- *  - shiftRight(1,r)
- *  - printf() to verify that register equals "4" (divided by two)
+ *  1. Division by two:
+ *  - reset all bits to 0.
+ *  - setBit(3,r) to 1.
+ *  - shift Right 1 step.
+ *  - assert to understand that 8 becomes 4.
  *   
- *  2. Control most significant bit (In case of signed integer)
- *  - Allocate memory for iRegister r
- *  - setBit(3,r)
- *  - shiftRight(1,r)
- *  - getBit(31,r) should be 0 
+ *  2. Control most significant bit inserted is 0:
+ *  - reset all bits to 0.
+ *  - shift Right 31 steps
+ *  - mask the last bit
+ *  - assert that the last bit is 0 (not 1).
+ *  3.
+ *  - save the value register r.
+ *  - shift right 32 (should result in: no change in r).
+ *  - save the new value of r.
+ *  - assert to check that old and new value are the same. 
+ *  4.
+ *  - save the value register r.
+ *  - shift right -1 (should result in => nothig!).
+ *  - save the new value of r.
+ *  - assert to check that old and new value are the same. 
  */ 
 void shiftRight(int, iRegister *);
 
@@ -278,12 +287,23 @@ void shiftRight(int, iRegister *);
  *  properties: reg2str(r) = 00000001, After shiftLeft(1,r), reg2str(r) = 00000010. Multiplication by two
  *
  *  test-cases: 
- *  1. Multiplication by two
- *  - Allocate memory for iRegister r
- *  - setBit(2,r)
- *  - printf() to verify that register equals "4"
- *  - shiftLeft(1,r)
- *  - printf() to verify that register equals "8" (multiply by two) 
+ *  1. Multiplication by two:
+ *  -resetAll bits in r.
+ *  -set r to 0x8
+ *  -leftShift once 
+ *  -afterwards: assert to check that the newValue is the oldValue * 2
+ *  2. LSB should be 0:
+ *  -set all bits to 1.
+ *  -than performs a leftShift 
+ *  -than controlls to see if the lowest bit is 0.
+ *  3. leftShift more than 31.
+ *  -stores the value of r.content.
+ *  -tries to shift 32 bits. 
+ *  -controlls that no bits was changed (due to input being >31).
+ *  4.
+ *  -stores the value of r.content.
+ *  -tries to shift -1 bits. 
+ *  -controlls that no bits was changed (due to input being negative).
  */ 
 void shiftLeft(int, iRegister *);
 
@@ -306,11 +326,24 @@ void shiftLeft(int, iRegister *);
  *  if getBit(i, r) == 0 then getBit(j, r) returns the same value for all 0 <= j < 32 and j <> i before and after resetBit(i, r)
  * 
  *  test-cases: 
- *  1,2,3. Allocate memory to an iRegister r
- *  first do resetAll(&r),
- *  then set the i'th bit of &x by setBit(i, &r) for i = 0, 15 and 23 and then
- *  display the result after each and every call by 
- *    printf("%s",reg2str(r)) 
+ *  1.
+ *  -set r to 0xFFFFFFFF (only 1:s)
+ *  -reset bit nr 8.
+ *  -mask out bit number 8.
+ *  -Than: compare it to 0 (zero). 
+ *  2.
+ *  -save the current value of r.
+ *  -resets bit 33 (outside the register)
+ *  -assert() to insure that the value of r is unchanged
+ *  3.
+ *  -save the current value of r.
+ *  -resets bit -1 (outside the register)
+ *  -assert() to insure that the value of r is unchanged
+ *  4.
+ *  -reset bits to 0.
+ *  -resetBit -> 3. 
+ *  -assert to insure that bit 3 is set to 0.
+ *  -Iterate and assert if all bits are 0.
  */
 void resetBit(int, iRegister *);
 

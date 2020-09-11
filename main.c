@@ -243,6 +243,7 @@ int main ()
   shiftLeft(32,&r);
   registerAfterwards = r.content;
   assert(registerAfterwards==registerBefore);
+  
   /*4. If  you  want to left shift, less than: (-1) steps => Do nothing */
   registerBefore = r.content;
   shiftLeft(-1,&r);
@@ -251,7 +252,7 @@ int main ()
   
   
   /* TEST: resetBit(int i, iRegister *r) */
-  //TEST 1. Set everything to 1:s, than reset the i'th bit
+  //1. Set everything to 1:s, than reset the i'th bit
   r.content |= ~(0 << 32);
   int bitToReset = 8;
   resetBit(bitToReset, &r);
@@ -259,18 +260,18 @@ int main ()
   theBit = (r.content &(1 << bitToReset)); 
   theBit = theBit >> bitToReset;
   assert(theBit==0);
-  //TEST 2. i input, bigger than 31 => should not change the content r.content
+  //2. i input, bigger than 31 => should not change the content r.content
   int beforeValue = r.content;
   resetBit(33,&r);
   int afterValue =r.content;
   assert(beforeValue==afterValue);
   
-  //TEST 3. input i= -1 < 0: => does not result in a change of r.content
+  //3. input i= -1 < 0: => does not result in a change of r.content
   beforeValue = r.content;
   resetBit(-1,&r);
   afterValue =r.content;
   assert(beforeValue==afterValue); //r.content should stay the same
-   //TEST 4. ?
+   //4. set all bits to 0. set the bit nr.3 till 0, kolla så att bit 3 + samtliga bitar =0
    r.content =0x0;
    resetBit(3,&r);
    assert((r.content &(1 << 2))==0); // the 3:rd bit should we 0 not 1
