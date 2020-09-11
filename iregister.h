@@ -37,16 +37,20 @@ typedef struct{
  * 
  *  test-cases: 
  *  1. All bits are set
- *   - Allocate memory for iRegister 
- *   - use setAll(r) to set all bits
- *   - printf to verify that all bits are set
- *   - use resetAll(r) to reset all bits 
- *   - printf to verify that all bits are reset
+ *  - set all bits to 1 (r.content = -1 = 0xFFFFFFFF) 
+ *  - assert that all bits are 1
+ *  - resetAll(&r)
+ *  - assert that all bits are 0
  *  2. No bits are set
- *   - Allocate memory for iRegister (calloc() to set the bits to zero)
- *   - printf to verify that all bits are zero
- *   - user resetAll(r) to reset all bits 
- *   - printf to verify that nothing has changed
+ *  - set all bits to 0 (r.content = 0)
+ *  - resetAll(&r)
+ *  - assert that all bits remain as 0
+ *  3. iRegister is NULL
+ *  
+ *  4. Half of the bits are set from the start
+ *  - set half the bits to 1 (r.content = 0xFFFF0000)
+ *  - resetAll(&r)
+ *  - assert that all bits are 0
  */ 
 void resetAll(iRegister *);
 
@@ -65,17 +69,26 @@ void resetAll(iRegister *);
  *  properties: After setBit(i,r), (for 0 <= j < 32) => getBit(i, r) = 1
  *  
  *  test-cases: 
- *  1. Bit input out of range
- *   - setBit(33,r)
- *   - Printf() an error
- *   - Return before effecting the register
- *
- *  2. Set three bits of register
- *   - Clear register with resetAll(r)
- *   - printf() to verify that all bits are zero.
- *   - setBit(0,r), setbit(3,r), setBit(7,r) 
- *   - getBit(0,r), getBig(3,r), getBig(7,r)
- *   - The three bits should be set
+ *  1. Bit that should be set is already set
+ *  - set a bit manually (e.g r.content = 0x2)
+ *  - setBit(2,&r)
+ *  - mask out the bit from r.content
+ *  - assert that the masked bit is set
+ *  2. Bit that should be set is zero
+ *  - set register to 0 
+ *  - setBit(1,&r)
+ *  - mask out the bit from r.content
+ *  - assert that the masked bit is set
+ *  3. Set the first bit of iRegister
+ *  - clear the register
+ *  - setBit(0,&r)
+ *  - mask out the first bit
+ *  - assert that the first bit is set
+ *  4. Set the last bit of iRegister
+ *  - clear the register
+ *  - setBit(31,&r)
+ *  - mask out the bit from r.content
+ *  - assert that the bit is set
  */ 
 void setBit(int, iRegister *);
 
@@ -92,18 +105,19 @@ void setBit(int, iRegister *);
  *  properties: after setAll(r), for 0 <= j < 32 => getBit(j, r) = 1
  * 
  *  test-cases: 
- *  1. Set all bits
- *   - Allocate memory for iRegister 
- *   - use setAll(r) to set all bits
- *   - printf to verify that all bits are set
- *   - use setAll(r) to set all bits
- *   - printf to verify that nothing has changed
- *
- *  2. No bits are set
- *   - Allocate memory for iRegister (calloc() to set the bits to zero)
- *   - printf to verify that all bits are zero
- *   - user setAll(r) to set all bits 
- *   - printf to verify that all bits are set 
+ *  1. All bits are set
+ *  - set all bits in register manually (r.content = 0xFFFFFFFF)
+ *  - setAll(&r)
+ *  - assert that all bits are still 1
+ *  2. All bits are zero
+ *  - reset all bits in register manually (r.content = 0)
+ *  - setAll(&r);
+ *  - assert that all bits are set
+ *  3. Half of the bits are set
+ *  - set half of the bits in the register
+ *  - setAll(&r)
+ *  - assert that all bits are set
+ *  4. 
  */ 
 void setAll(iRegister *);
 
@@ -122,15 +136,18 @@ void setAll(iRegister *);
  *  properties: setBit(1,r)=1, than after getBit(1,r), setBit(1,r)=1
  * 
  *  test-cases: 
- *  1. Bit input out of range
- *  - getBit(33,r)
- *  - Printf() an error
- *  - Return before reading the wrong bit
- *  2. Read the right bit
- *  - Allocate memory for iRegister (calloc() to set all to zero)
- *  - setBit(10,r)
- *  - getBit(10,r) should return 1 
- *  - printf() to verify
+ *  1. Get 8th (set), all others should be the same 
+ *  - set all bits to zero but the 8th bit manually
+ *  - iterate through the register, assert that all but the 8th bit is zero
+ *  2. Get the first bit, all others should be the same
+ *  - set the first bit 
+ *  - iterate through the register, assert that all but the first bit is zero
+ *  3. Get the last bit, all others should be the same 
+ *  - set the last bit in the register manually (r.content = 0x80000000)
+ *  - iterate through the register, assert that all but the last bit is zero
+ *  4. Get the 8th bit(zero), all others should be the same 
+ *  - Set all bits to 1 but the 8th bit manually (r.content = 0xFFFFFF7F)
+ *  - iterate throught the register, assert that all but the 8th bit is 1
  */ 
 int getBit(int, iRegister *);
 
@@ -151,12 +168,26 @@ int getBit(int, iRegister *);
  *  properties: After assignNibble(start,value,r). getNibble(start, r) = value 
  *  
  *  test-cases:
- *  1. Wrong input
- *  - assignNibble(33, 4, r)
- *  - Should return with error
- *  2. Validate insert
- *  - assignNibble(0,7,r)
- *  - getNibble(0,r) should be = 7
+ *  1. Assign the first nibble
+ *  - clear the register
+ *  - assignNibble(0, 14, &r)
+ *  - Mask out the first nibble
+ *  - assert that the nibble is 14
+ *  2. Assign the last nibble 
+ *  - clear the register
+ *  - assignNibble(28, 14, &r)
+ *  - mask out the last nibble 
+ *  - assert that the last nibble is 14
+ *  3. Assign with all zeros 
+ *  - Clear the register 
+ *  - assignNibble(28,0,&r)
+ *  - mask out the last nibble 
+ *  - assert that the last nibble is zero
+ *  4. Assign with all ones 
+ *  - clear the register
+ *  - assignNibble(4,15)
+ *  - mask out the nibble
+ *  - assert that the second nibble is all ones (15)
  */ 
 void assignNibble(int, int, iRegister *);
 
@@ -175,12 +206,19 @@ void assignNibble(int, int, iRegister *);
  *  properties: 0 <= getNibble(i,r) < 15, getNibble(i,r) != Null
  *    
  *  test-cases:
- *  1. Get the correct Nibble
- *  - assignNibble(0,7,r)
- *  - print getNibble(0,r) to verify value is ...XXXX0111
- *  2. Index out of range
- *  - getNibble(30,r)
- *  - should return and provide error due to index > 29
+ *  1. Get the first nibble
+ *  - clear the register 
+ *  - set the first nibble
+ *  - assert that getNibble(0,%r) is 15
+ *  2. Get the last nibble
+ *  - set the last nibble, clear the rest 
+ *  - assert that getNibble(28,&r) is 15
+ *  3. Try to get a nibble out of range
+ *  - clear the register
+ *  - assert that getNibble(33,&r) is NULL
+ *  4. Get nibble, all other bits should remain unchanged 
+ *  - clear the register, set the second nibble 
+ *  - assert that the content  is unchanged after getNibble 
  */ 
 int getNibble(int, iRegister *);
 
