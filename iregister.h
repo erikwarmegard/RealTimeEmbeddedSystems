@@ -224,12 +224,43 @@ void assignNibble(int, int, iRegister *);
 int getNibble(int, iRegister *);
 
 
-/** returns a pointer to an array of 32 characters, with each character
+/** @brief returns a pointer to an array of 32 characters, with each character
  *  representing the corresponding bit of the iRegister, i.e., if the bit is set,
  *  then the character is "1" (ASCII char with code 49), or otherwise is "0"
  *  (ASCII char with code 48)
+ *  
+ *  @param r An iRegister struct
+ *
+ *  @return Pointer to the start of the char array which represents the iRegister
+ *
+ *  Pre-condition: iRegister != NULL
+ *  Post-condition: iRegister != NULL
+ *
+ *  Properties: Allocates memory for 32 characters, last character is the null terminator.
+ *
+ *  test-cases:
+ *  1. reg2str() should end at null terminator
+ *  - set the iRegister content to a value 
+ *  - create a pointer with reg2str() function 
+ *  - iterate through the array until the null terminator arrives
+ *  - assert that the function iterates 32 times
+ *  2. reg2str() can print all ones 
+ *  - set the iRegister content to all ones 
+ *  - create a pointer with reg2str() function
+ *  - iterate through the array until the null terminator arrives 
+ *  - assert that all character all ones 
+ *  3. reg2str() can print all zeros
+ *  - set the iRegister content to all zeros 
+ *  - create a pointer with reg2str() function
+ *  - iterate through the array until the null terminator arrives 
+ *  - assert that all character all zeros 
+ *  4. reg2str() can print both ones and zeros
+ *  - set the iRegister content to half zeros, half ones
+ *  - create a pointer with reg2str() function
+ *  - iterate through the array until the null terminator arrives 
+ *  - assert that the first half of characters are ones, the rest are zeros  
  */
-char *reg2str(iRegister *);
+char *reg2str(iRegister);
 
 
 /** @brief shifts all the bits of the iRegister to the right by n palces (appends 0
