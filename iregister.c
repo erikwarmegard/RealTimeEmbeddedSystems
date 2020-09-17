@@ -53,18 +53,15 @@ int getNibble(int pos, iRegister *r) {
 }
 
 
-//FIXME: Will eventually fill up all memory space if called too much.
 char *reg2str(iRegister *r) {
-	char *reg = (char*) malloc(sizeof(char) * 32);
-
+	char *reg = (char*) malloc(sizeof(char) * 33);	
 	int i;
-
 	for(i = 0; i < 32; i++){
 		if(getBit(i,r)){
 			reg[i] = 49;
 		} else reg[i] = 48;
 	}
-
+        reg[32] = 0x00; // To end the string
 	return reg;
 }
 
