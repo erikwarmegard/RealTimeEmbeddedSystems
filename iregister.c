@@ -61,7 +61,7 @@ char *reg2str(iRegister *r) {
 			reg[i] = 49;
 		} else reg[i] = 48;
 	}
-        reg[32] = 0x00; // To end the string
+        reg[32] = '\0'; // To end the string
 	return reg;
 }
 
