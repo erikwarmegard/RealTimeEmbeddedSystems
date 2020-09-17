@@ -137,7 +137,7 @@ int main ()
   theNibble = (theNibble >> (startPos-1)*4);
   assert(theNibble == theValue);
   /* 4. Assign with all ones */
-  r.content =0; //resetAll(&r);
+  resetAll(&r);
   startPos = 4;
   theValue = 15;
   assignNibble(startPos,theValue,&r);
@@ -165,12 +165,22 @@ int main ()
   assert(r.content == 0x000000F0);
 
   
-  /*TEST: reg2str(iRegister *r) */ //TODO: Make this with assert, if possible
-  /*1. Test by printing the characters at the pointer location*/
-  r.content =0; //resetAll(&r);
-  assignNibble(23,15,&r);
-  char *pointer = reg2str(&r);
-
+  /*TEST: reg2str(iRegister *r) */
+  /*1. reg2str() should end at null terminator */
+  r.content = 0;
+  char *pointer = reg2str(r);
+  int counter = 0;
+  
+  while (*pointer != '\0'){
+    printf("%d: %c\n", counter, *pointer);
+    pointer++;
+    counter++;
+  }
+  assert(counter == 32);
+  
+  
+  
+  /*
   char *end = pointer + 31;
   char *index = pointer;
   int i = 31; //used to format printf
@@ -179,30 +189,29 @@ int main ()
     i--;
     end--;
   }
-  /*Test 2. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
-  /*Test 3. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
-  /*Test 4. THIS MIGHT BE HARD TO DO WITHOUT ANY DIRECTION FROM THE TEACHER*/
+  */
+
 
   /* TEST: shiftRight(int i, iRegister *r)  JOHAN -precis klar*/
   /* 1. Logic control, division by two */
-  r.content =0; //resetAll(&r);
+  resetAll(&r);
   int oldValue = r.content = (1 << 3);
   shiftRight(1,&r);
   int newValue = r.content;
   assert(newValue == (oldValue / 2));
   /* 2. MSB should be 0 */
-  r.content =0; //resetAll(&r);
+  resetAll(&r);
   shiftRight(31, &r);
   int MSB = r.content & (1 << 31);
   MSB = MSB >> 31;
   assert(MSB == 0);
-  /*3. If  you  try to right shift: 32+ steps => Do nothing (r is unchanged)*/
+  /*3. If  you  want to right shift: 32+ steps => Do nothing (r is unchanged)*/
   int registerBefore =r.content;
   int registerAfterwards =0;
   shiftRight(32, &r);
   registerAfterwards = r.content;
   assert(registerAfterwards==registerBefore);
-  /*4. If  you  try to right shift, less than: (-1) steps => Do nothing (r is unchanged)*/
+  /*4. If  you  want to right shift, less than: (-1) steps => Do nothing (r is unchanged)*/
   registerBefore =r.content;
   registerAfterwards =0;
   shiftRight(-1, &r);
@@ -212,7 +221,7 @@ int main ()
 
   /* TEST: shiftLeft(int i, iRegister *r) */
   /* 1. Logic control, multiplication by two */
-  r.content =0; //resetAll(&r);
+  resetAll(&r);
   oldValue = NULL;
   newValue = NULL;
   oldValue = r.content = (1 << 3);
