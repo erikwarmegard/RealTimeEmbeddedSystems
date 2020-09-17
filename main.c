@@ -166,32 +166,50 @@ int main ()
 
   
   /*TEST: reg2str(iRegister *r) */
-  /*1. reg2str() should end at null terminator */
+  /* 1. reg2str() should end at null terminator */
   r.content = 0;
-  char *pointer = reg2str(r);
+  char *firstTest = reg2str(r);
   int counter = 0;
   
-  while (*pointer != '\0'){
-    printf("%d: %c\n", counter, *pointer);
-    pointer++;
+  while (*firstTest != '\0'){
+    // printf("%d: %c\n", counter, *pointer);
+    firstTest++;
     counter++;
   }
   assert(counter == 32);
   
+  /* 2. reg2str() can print all ones  */
+  r.content = 0xFFFFFFFF;
+  char *secondTest = reg2str(r);
   
-  
-  /*
-  char *end = pointer + 31;
-  char *index = pointer;
-  int i = 31; //used to format printf
-  while(end >= index) {
-    printf("%d: %c\n",i,*end);
-    i--;
-    end--;
+  while (*secondTest != '\0'){
+    assert(*secondTest == '1');
+    secondTest++;
   }
-  */
-
-
+  
+  /* 3. reg2str() can print all zeros*/
+  r.content = 0;
+  char *thirdTest = reg2str(r);
+  
+  while (*thirdTest != '\0'){
+    assert(*thirdTest == '0');
+    thirdTest++;
+  }
+  /* 4. reg2str() can print both ones and zeros */
+  r.content = 0xFFFF0000;
+  char *forthTest = reg2str(r);
+  counter = 0;
+  
+  while (*forthTest != '\0'){
+    if(counter < 16){
+      assert(*forthTest == '0');
+    }
+    else {
+      assert(*forthTest == '1');
+    }
+    forthTest++;
+    counter++;
+  }
   /* TEST: shiftRight(int i, iRegister *r) */
   /* 1. Logic control, division by two */
   resetAll(&r);
@@ -273,7 +291,7 @@ int main ()
   for(int i=0; i<32; i++){
     assert((r.content &(1 << i))==0);
   }
-  
+
   printf ("\n");
   return 0;
 }

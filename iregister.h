@@ -234,7 +234,7 @@ int getNibble(int, iRegister *);
  *  @return Pointer to the start of the char array which represents the iRegister
  *
  *  Pre-condition: iRegister != NULL
- *  Post-condition: iRegister != NULL
+ *  Post-condition: The allocated memory of the array != NULL
  *
  *  Properties: Allocates memory for 32 characters, last character is the null terminator.
  *
