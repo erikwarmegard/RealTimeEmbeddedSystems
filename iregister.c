@@ -77,15 +77,21 @@ int getNibble(int pos, iRegister *r) {
 }
 
 
-char *reg2str(iRegister *r) {
+char *reg2str(iRegister r) {
+	if(r == NULL) {
+		return NULL;
+	}
 	char *reg = (char*) malloc(sizeof(char) * 33);	
 	int i;
 	for(i = 0; i < 32; i++){
-		if(getBit(i,r)){
+		if(getBit(i,&r)){
 			reg[i] = 49;
 		} else reg[i] = 48;
 	}
         reg[32] = '\0'; // To end the string
+	if(r == NULL) {
+		// exit(-1);
+	}
 	return reg;
 }
 
