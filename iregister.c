@@ -2,7 +2,7 @@
 //  Updated by Masoumeh Taromirad on 11/08/16.
 //  Updated by Wagner Morais and Johannes van Esch on 28/08/18.
 //  Copyright (c) 2014 by Mohammadreza Mousavi [mohmou]. All rights reserved.
- 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "iregister.h"
@@ -17,7 +17,7 @@ void resetAll(iRegister *r){
 void setBit(int i, iRegister *r){
 	if ((i > 31) | (i < 0)) return;
 	if (r == NULL) return;
-	r->content |= (1 << i);	
+	r->content |= (1 << i);
 }
 
 
@@ -38,33 +38,33 @@ int getBit(int i, iRegister *r) {
 }
 
 
-void assignNibble(int start, int value, iRegister *r) {
-	if(start > 29) return;
+void assignNibble(int pos, int value, iRegister *r) {
+	if(0 > pos || pos > 9) return;
 	if (r == NULL) return;
-	r->content &= ~(15 << start); 
-	r->content |= (value << start);
+	r->content &= ~(15 << (pos-1) * 4); //removes the old nibble from the register
+	r->content |= (value << (pos-1) * 4); //adds the new nibble
 }
 
 
-int getNibble(int start, iRegister *r) {
-	if(start > 29 || start < 0) return NULL;
+int getNibble(int pos, iRegister *r) {
+	if(0 > pos || pos > 9) return NULL;
 	if (r == NULL) return NULL;
-	return ((r->content) & ( (unsigned) 15 << start )) >> start;
+	return ((r->content) & ( (unsigned) 15 << (pos-1) * 4 )) >> (pos-1) * 4;
 }
 
 
 //FIXME: Will eventually fill up all memory space if called too much.
 char *reg2str(iRegister *r) {
 	char *reg = (char*) malloc(sizeof(char) * 32);
-	
+
 	int i;
-	
+
 	for(i = 0; i < 32; i++){
 		if(getBit(i,r)){
 			reg[i] = 49;
 		} else reg[i] = 48;
 	}
-	
+
 	return reg;
 }
 
@@ -73,7 +73,7 @@ char *reg2str(iRegister *r) {
 void shiftRight(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
 	if (r == NULL) return;
-	
+
         r->content = r->content >> i;
         for(int j = 0; j < i; j++){
           resetBit(31-j ,r);
