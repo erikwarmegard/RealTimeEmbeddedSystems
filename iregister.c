@@ -99,7 +99,7 @@ char *reg2str(iRegister r) {
 void shiftRight(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
 	if (r == NULL) return;
-    r->content =  r->content >> i;
+    r->content = (unsigned) r->content >> i; //added unsigned type cast
 	if(r == NULL) { 
           // exit(-1);
         }

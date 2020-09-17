@@ -192,7 +192,7 @@ int main ()
   */
 
 
-  /* TEST: shiftRight(int i, iRegister *r)  JOHAN -precis klar*/
+  /* TEST: shiftRight(int i, iRegister *r) */
   /* 1. Logic control, division by two */
   resetAll(&r);
   int oldValue = r.content = (1 << 3);
@@ -273,7 +273,7 @@ int main ()
   for(int i=0; i<32; i++){
     assert((r.content &(1 << i))==0);
   }
-
+  
   printf ("\n");
   return 0;
 }
