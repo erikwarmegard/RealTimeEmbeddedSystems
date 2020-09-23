@@ -62,7 +62,7 @@ ExpStruct *iexp(int n) {
 
 char* expo2string(ExpStruct * exp){
 		char * temp = malloc(sizeof(char)*32); //pointer to store the string in
-		sprintf(temp, "%d.%02d\n",exp->expInt,exp->expFraction); //adress so where our string/char[] is stored (remeber to free)
+		sprintf(temp, "%d.%02d",exp->expInt,exp->expFraction); //adress so where our string/char[] is stored (remeber to free)
 		return temp;
 
 }

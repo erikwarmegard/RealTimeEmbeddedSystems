@@ -213,9 +213,9 @@ void piface_puts(char s[])
 
 }
 
+
 void piface_clear(void)
 {
     /* clear display */
 			lcd_write_cmd( 0x01 );
-			lcd_write_cmd( 0x02 );
 }
