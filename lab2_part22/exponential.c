@@ -32,13 +32,14 @@ unsigned long int power(int base, int expo) {
 }
 
 
-double calculateExponant(int n){ //beräkna exponent
-	double dExponent = 1.0;
+double calculateExponant(int n){ //calc exponent
+	double dExponent = 1.0; //for n=0 (always 1)
 
 	for(int i=1; i < (n+1) ;i++){
-		int factor =factorial(i);
-		dExponent +=((pow(n,i) / factor));
-	}	
+		double factor =factorial(i); 
+		dExponent +=((power(n,i) / factor));
+	}
+	return dExponent;
 }
 
 
@@ -46,15 +47,15 @@ ExpStruct *iexp(int n) {
 	ExpStruct * exponent = (ExpStruct *) malloc(sizeof(ExpStruct));
 
 	if(n>21) { 
-		exponent->expInt = -1;
+		exponent->expInt = 0;
 		exponent->expFraction = 0;
 		return exponent;
 	}
 	
-	double fractionValue = calculateExponant(n); //gets the exponent for n
+	double fractionValue = calculateExponant(n); //call to: gets the exponent for n
 	double value= 1.0;
 	
-	exponent->expFraction = modf(fractionValue, &value)*100;
+	exponent->expFraction = modf(fractionValue, &value)*100.0;
 	exponent->expInt = (int) value;
 	return exponent;
 }

@@ -33,7 +33,7 @@ typedef struct expStruct ExpStruct;
  */ 
 ExpStruct * iexp(int);
 
-char * expo2string(ExpStruct * exp); //new
+char * expo2string(ExpStruct *); //new
 
 /** @brief Print the exponent struct
  *
