@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include "exponential.h"
 #include <math.h>
-#include <CUnit/CUnit.h>
-#include <CUnit/Basic.h>
+#include <CUnit.h>
+#include <Basic.h>
 
-int init_suite(void) {return 0;}
-int clean_suite(void) {return 0;}
 
 double factorial(int number){
 	if(number == 0) {
@@ -27,8 +25,10 @@ double factorial(int number){
 	return answer;
 }
 
-
 double power(double base, double expo) {
+	if(expo>21) {
+		return -1;
+	}
 	double answer = 1;
 	for(int i = 0; i < expo; i++) {
 		answer *=base;
@@ -36,9 +36,14 @@ double power(double base, double expo) {
 	return answer;
 }
 
-
 ExpStruct *iexp(int n) {
 	ExpStruct * exponent = (ExpStruct *) malloc(sizeof(ExpStruct));
+
+	if(n>21) { 
+		exponent->expInt = -1;
+		exponent->expFraction = 0;
+		return exponent;
+	}
 
 	double dExponent = 1; //
 	double value = 1.0;
@@ -59,45 +64,3 @@ void printExp(ExpStruct * e){
 }
 
 
-int sum(int a, int b) {
-	return (a + b);
-}
-
-void test_sum() {
-		CU_ASSERT(5 == sum(3,2));
-		//CU_ASSERT(
-}
-
-
-int main() {
-	ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
-
-	e1 = iexp(2);
-	printExp(e1);
-	
-	CU_pSuite pSuite1 = NULL;
-	
-	// Initialize CUnit test registry
-	if(CUE_SUCCESS != CU_initialize_registry()){
-		return CU_get_error();
-	}
-		
-	// Add suite1 to registry
-	pSuite1 = CU_add_suite("Basic_Test_Suite1", init_suite, clean_suite);
-	if(NULL == pSuite1) {
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-	
-	// Add test1 to suite1
-	if((NULL == CU_add_test(pSuite1, "\n\n...Testing Sum function...\n\n",test_sum))){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-	
-	CU_basic_run_tests(); // Output to the screen
-	
-	CU_cleanup_registry();
-		
-	return CU_get_error();
-}
