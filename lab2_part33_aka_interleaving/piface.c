@@ -149,8 +149,10 @@ static void lcd_write_data(uint8_t data)
 
 	lcd_busy_wait();
 
-    /* write low nibble */
-    lcd_pulse( LCD_BL | LCD_RS | (data & 0x0F) );
+    	/* write low nibble */
+    	lcd_pulse( LCD_BL | LCD_RS | (data & 0x0F) );
+	
+	lcd_busy_wait();
 }
 
 static void lcd_init(void)
