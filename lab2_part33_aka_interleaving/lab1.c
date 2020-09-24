@@ -16,7 +16,7 @@ void piface_clear();
 
 
 void showExponentOnScreen(int i){
-  ExpStruct * e1 = iexp((int)i);  
+  ExpStruct * e1 = iexp((int)i);  //we are bliking inside the exponential calc.
   piface_clear(); //clear screen
   char * c = malloc(sizeof(char)*32);
   sprintf(c,"%d: ",i);

@@ -53,10 +53,10 @@ double calculateExponant(int n){ //calc exponent
 	double dExponent = 1.0; //for i=0 (always 1)
 
 	for(int i=1; i < (n+1) ;i++){
-		delay(4000000); //have a delay to be able to see the 
+		delay(4000000); //M. visualize: delay to visualize the growing behavior of n+1 with out eyes
 		double factor =factorial(i);
 		dExponent +=((power(n,i) / factor));
-		blinkLed(); //need to add blindLed() ->interleaving achived
+		blinkLed(); //M. visualize: need to add blindLed() ->interleaving achived
 	}
 	return dExponent;
 }
