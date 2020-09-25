@@ -24,18 +24,17 @@ void delay(long unsigned int delayTime) {
     long unsigned int i = 0;
     while(i <= delayTime){
         i++;
-	if(i % (delayTime/2) ==1){blinkLed();}
+	//if(i % (delayTime/8) ==1){blinkLed();}
     }
     return;
 }
 
 void showExponentOnScreen(int i){
+  ExpStruct * e1 = iexp((int)i);  
   piface_clear(); //clear screen
   char * c = malloc(sizeof(char)*32);
   sprintf(c,"%d: ",i);
-
   piface_puts(c);
-  ExpStruct * e1 = iexp((int)i);
   char * f1 = expo2string(e1);
   piface_puts(f1);
   free(f1);
@@ -46,22 +45,15 @@ void showExponentOnScreen(int i){
 }
 
 
-
+/* This is the main for lab2_part31 where you want to blink a led with a constant delay time */
 int main()
 {
   /* Enable GPIO16 as an output */
   GPIO->GPFSEL1 |= (1 << 18);
   GPIO->GPCLR0 = (1 << 16);
-  piface_clear();
   while (1){
-
-    for(int i=1; i<16; i++){
-        showExponentOnScreen(i);
-	delay(6000000); //delay
-	
-  	
-    }
-
+	blinkLed();
+	delay(6000000);
   }
 
 	return 0;

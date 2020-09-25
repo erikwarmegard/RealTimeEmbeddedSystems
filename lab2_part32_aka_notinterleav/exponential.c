@@ -2,7 +2,18 @@
 #include <stdio.h>
 #include "exponential.h"
 #include <math.h>
+#include <rpi3.h>
 
+
+
+void delay(long unsigned int delayTime) {
+    long unsigned int i = 0;
+    while(i <= delayTime){
+        i++;
+	//if(i % (delayTime/8) ==1){blinkLed();}
+    }
+    return;
+}
 
 unsigned long int factorial(int number){
 	if(number == 0) {
@@ -33,9 +44,10 @@ unsigned long int power(int base, int expo) {
 
 
 double calculateExponant(int n){ //calc exponent
-	double dExponent = 1.0; //for n=0 (always 1)
+	double dExponent = 1.0; //for i=0 (always 1)
 
 	for(int i=1; i < (n+1) ;i++){
+		delay(3000000); //M. visualize: delay to visualize the growing behavior of n+1 with out eyes
 		double factor =factorial(i);
 		dExponent +=((power(n,i) / factor));
 	}
