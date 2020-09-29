@@ -13,8 +13,10 @@
     piface_puts(s); \
 }
 
-int is_prime(int i) {
-    // To be implemented!!!
+int is_prime(int i) { //done by erik and johan
+		for(int j=0; j<= sqrt(i);j++ ){
+			if(i%j==0){ return 0; }
+		}
     return 1;
 }
 
