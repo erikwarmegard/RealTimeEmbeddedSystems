@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "exponential.h"
+#include "iexp.h"
 #include <math.h>
 #include <rpi3.h>
 
