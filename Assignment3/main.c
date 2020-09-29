@@ -57,5 +57,6 @@ void busy_wait(uint32_t t) {
 int main() {
     piface_init();
     spawn(computePower, 1);
+		spawn(computePower, 2);
     computePower(0);
 }
