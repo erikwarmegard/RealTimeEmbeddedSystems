@@ -14,15 +14,21 @@
 }
 
 int is_prime(int i) { //done by erik and johan
-		for(int j=0; j<= sqrt(i);j++ ){
-			if(i%j==0){ return 0; }
-		}
+    for(int j=0; j<= sqrt(i);j++ ){
+	if(i%j==0){ return 0; }
+    }
     return 1;
 }
 
 
 void computeExponential(int pos) {
-    // To be implemented using ExpStruct !!!
+    ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
+    for(int n = 0; ; n++) {
+        e1 = iexp(n);
+	PUTTOLDC("T%i: %d.%d", pos, e1->expInt, e1->expFraction);
+        yield();
+    }
+    free(e1);
 }
 
 //Each segment (seg:0...3) can take up 8 digits in space
