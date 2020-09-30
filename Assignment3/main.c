@@ -20,7 +20,7 @@ void piface_putc(char c);
 void piface_clear();
 
 int is_prime(int i) { //done by erik and johan
-    for(int j=0; j<= sqrt(i);j++ ){
+    for(int j=2; j<= i/2 ;j++ ){ //sqrt(i)
 			if(i%j==0){ return 0; }
     }
     return 1;
@@ -28,14 +28,14 @@ int is_prime(int i) { //done by erik and johan
 
 
 void computeExponential(int pos) {
-    //ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
 		ExpStruct *e1;
-		for(int n = 0; ; n++) {
+		for(int n = 1; ; n++) {
         e1 = iexp(n);
 				printAtSeg(pos,e1->expInt);
         yield();
+				free(e1);
     }
-    free(e1);
+
 }
 
 //Each segment (seg:0...3) can take up 8 digits in space
@@ -53,10 +53,9 @@ void printAtSeg(int seg, int num) { // To be implemented
 }
 
 void computePrimes(int pos) {
-    for(int n = 0; ; n++) {
+    for(int n = 1; ; n++) {
         if (is_prime(n)) {
-            //PUTTOLDC("T%i: %i", pos, n*n);
-						printAtSeg(pos,n*n);
+						printAtSeg(pos,n);
             yield();
         }
     }
@@ -64,7 +63,6 @@ void computePrimes(int pos) {
 
 void computePower(int pos) {
     for(int n = 0; ; n++) {
-        //PUTTOLDC("T%i: %i", pos, n*n);
 				printAtSeg(pos,n*n);
         busy_wait(1000000u); //delay added for visualization purposes!!!
         yield();
@@ -79,7 +77,7 @@ void busy_wait(uint32_t t) {
 int main() {
     piface_init();
     spawn(computePower, 1);
-		spawn(computePower, 2);
-		spawn(computeExponential,3);
+		spawn(computePrimes, 2);
+		spawn(computeExponential, 3);
     computePower(0);
 }
