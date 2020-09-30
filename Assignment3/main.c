@@ -2,21 +2,26 @@
  * Part of the code below has been developed by Johan Nordlander and Fredrik Bengtsson at LTU.
  * Part of the code has been also developed, modified and extended to ARMv8 by Wagner de Morais and Hazem Ali.
 */
+#include <stdlib.h>
 #include <stdio.h>
-#include "iexp.h"
-#include "tinythreads.h"
-#include "rpi3.h"
-#include "iexp.h"
-#include "piface.h"
+#include "lib/iexp.h"
+#include "lib/tinythreads.h"
+#include "lib/rpi3.h"
+#include "lib/piface.h"
+#include <math.h>
 #define PUTTOLDC(fmt, args...){ \
 	char s[100]; \
     sprintf(s, fmt, ##args); \
     piface_puts(s); \
 }
 
+void piface_puts(char c[]);
+void piface_putc(char c);
+void piface_clear();
+
 int is_prime(int i) { //done by erik and johan
     for(int j=0; j<= sqrt(i);j++ ){
-	if(i%j==0){ return 0; }
+			if(i%j==0){ return 0; }
     }
     return 1;
 }
@@ -24,10 +29,10 @@ int is_prime(int i) { //done by erik and johan
 
 void computeExponential(int pos) {
     //ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
-		ExpStruct * e1;
+		ExpStruct *e1;
 		for(int n = 0; ; n++) {
         e1 = iexp(n);
-	PUTTOLDC("T%i: %d.%d", pos, e1->expInt, e1->expFraction);
+				printAtSeg(pos,e1->expInt);
         yield();
     }
     free(e1);
@@ -40,8 +45,9 @@ void computeExponential(int pos) {
 // ------------------
 void printAtSeg(int seg, int num) { // To be implemented
 		if(seg>3 ||seg< 0){ return; }
-
-		piface_set_cursor(seg/2,seg%2); //set the cursor to point to a segment
+		int row=(seg/2) + 1; //first row =1
+		int col=(seg%2)*8 ; // first col =0
+		piface_set_cursor(col,row); //set the cursor to point to a segment
 		PUTTOLDC("T%i:%d", seg, num);	//insert the new content at that location (override-text)
 
 }
@@ -49,7 +55,8 @@ void printAtSeg(int seg, int num) { // To be implemented
 void computePrimes(int pos) {
     for(int n = 0; ; n++) {
         if (is_prime(n)) {
-            PUTTOLDC("T%i: %i", pos, n*n);
+            //PUTTOLDC("T%i: %i", pos, n*n);
+						printAtSeg(pos,n*n);
             yield();
         }
     }
@@ -57,7 +64,8 @@ void computePrimes(int pos) {
 
 void computePower(int pos) {
     for(int n = 0; ; n++) {
-        PUTTOLDC("T%i: %i", pos, n*n);
+        //PUTTOLDC("T%i: %i", pos, n*n);
+				printAtSeg(pos,n*n);
         busy_wait(1000000u); //delay added for visualization purposes!!!
         yield();
     }
@@ -72,5 +80,6 @@ int main() {
     piface_init();
     spawn(computePower, 1);
 		spawn(computePower, 2);
+		spawn(computeExponential,3);
     computePower(0);
 }

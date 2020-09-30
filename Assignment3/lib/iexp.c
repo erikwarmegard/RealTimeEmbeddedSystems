@@ -5,21 +5,6 @@
 #include <rpi3.h>
 
 
-int led=0;
-void blinkLed(void){
-        if(led==1) {GPIO->GPCLR0 = (1 << 16); led=0;}
-	else{GPIO->GPSET0 = (1 << 16); led=1;}
-	
-}
-
-void delay(long unsigned int delayTime) {
-    long unsigned int i = 0;
-    while(i <= delayTime){
-        i++;
-	//if(i % (delayTime/8) ==1){blinkLed();}
-    }
-    return;
-}
 
 unsigned long int factorial(int number){
 	if(number == 0) {
@@ -53,10 +38,8 @@ double calculateExponant(int n){ //calc exponent
 	double dExponent = 1.0; //for i=0 (always 1)
 
 	for(int i=1; i < (n+1) ;i++){
-		delay(4000000); //M. visualize: delay to visualize the growing behavior of n+1 with out eyes
 		double factor =factorial(i);
 		dExponent +=((power(n,i) / factor));
-		blinkLed(); //M. visualize: need to add blindLed() ->interleaving achived
 	}
 	return dExponent;
 }
