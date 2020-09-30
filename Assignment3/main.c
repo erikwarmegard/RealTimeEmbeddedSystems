@@ -23,8 +23,9 @@ int is_prime(int i) { //done by erik and johan
 
 
 void computeExponential(int pos) {
-    ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
-    for(int n = 0; ; n++) {
+    //ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
+		ExpStruct * e1;
+		for(int n = 0; ; n++) {
         e1 = iexp(n);
 	PUTTOLDC("T%i: %d.%d", pos, e1->expInt, e1->expFraction);
         yield();
@@ -38,12 +39,11 @@ void computeExponential(int pos) {
 // |S2:XXXXXS3:XXXXX|
 // ------------------
 void printAtSeg(int seg, int num) { // To be implemented
-		//clear screen
-		//build a string for row1 : 16 chars
-		//output on screen
-		//increment the pointer to row 2
-		//build a string for row2
-		//write row to screen
+		if(seg>3 ||seg< 0){ return; }
+
+		piface_set_cursor(seg/2,seg%2); //set the cursor to point to a segment
+		PUTTOLDC("T%i:%d", seg, num);	//insert the new content at that location (override-text)
+
 }
 
 void computePrimes(int pos) {
