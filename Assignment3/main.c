@@ -3,6 +3,7 @@
  * Part of the code has been also developed, modified and extended to ARMv8 by Wagner de Morais and Hazem Ali.
 */
 #include <stdio.h>
+#include "iexp.h"
 #include "tinythreads.h"
 #include "rpi3.h"
 #include "iexp.h"
@@ -36,8 +37,13 @@ void computeExponential(int pos) {
 // |S0:XXXXXS1:XXXXX|
 // |S2:XXXXXS3:XXXXX|
 // ------------------
-void printAtSeg(int seg, int num) {
-    // To be implemented
+void printAtSeg(int seg, int num) { // To be implemented
+		//clear screen
+		//build a string for row1 : 16 chars
+		//output on screen
+		//increment the pointer to row 2
+		//build a string for row2
+		//write row to screen
 }
 
 void computePrimes(int pos) {
