@@ -223,7 +223,12 @@ void piface_clear(void)
 /* New method: '-inspired by the piface library created by Thomas Preston' <thomas.preston@openlx.org.uk>	*/
 void piface_set_cursor(uint8_t col, uint8_t row)
 {
+	uint8_t t = col < 39 ? col : 39;
+	col = t > 0 ? t : 0;
+	t = row < 1 ? row : 1;
+	row = t > 0 ? row : 0;
 
-    uint8_t addr = 0x40 +0x40*row + col;
-    lcd_write_cmd( addr | 0x80 );
+	uint8_t addr = col + ROW_OFFSETS[row];
+	addr = addr % 80;
+	lcd_write_cmd( 0x80 | addr );
 }

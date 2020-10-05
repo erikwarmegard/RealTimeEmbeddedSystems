@@ -45,7 +45,7 @@ int main()
   piface_clear();
   while (1){
 
-    for(int i=1; i<16; i++){
+    for(int i=1; i<23; i++){ //at i=22 or 23 we will reach overflow in calcExpo => zero!
         showExponentOnScreen(i);
     }
 

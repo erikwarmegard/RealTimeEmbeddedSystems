@@ -30,10 +30,11 @@ int main()
     {
 
       for(int i=1; i<20; i++){
+	  ExpStruct *e1;
           char * c = malloc(sizeof(char)*32);
           sprintf(c,"%d: ",i);
           piface_puts(c);
-          ExpStruct *e1 = (ExpStruct *) malloc(sizeof(ExpStruct));
+          
           e1 = iexp(i);
           char * c1 = exponent2str(e1);
           piface_puts(c1);

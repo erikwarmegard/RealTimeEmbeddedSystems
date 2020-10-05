@@ -27,17 +27,6 @@ int is_prime(int i) { //done by erik and johan
 }
 
 
-void computeExponential(int pos) {
-		ExpStruct *e1;
-		for(int n = 1; n < 22 ; n++) {// stops at n=22, ...01807,...
-        e1 = iexp(n);
-				printAtSeg(pos,e1->expInt);
-        yield();
-				free(e1);
-    }
-
-}
-
 //Each segment (seg:0...3) can take up 8 digits in space
 // ------------------
 // |S0:XXXXXS1:XXXXX|
@@ -51,6 +40,17 @@ void printAtSeg(int seg, int num) { // To be implemented
 		PUTTOLDC("T%i:%d", seg, num);	//insert the new content at that location (override-text)
 
 }
+// The function declaration above displays an integer content in a given segment.
+// However, to display arbitrary arguments (float, double, ...etc), you can use
+// Variadic arguments with proper string formatting.
+// Please check the url: https://en.cppreference.com/w/c/language/variadic
+// For example, you could redeclare printAtSeg as:
+//
+//              void printAtSeg(int seg, const char* fmt, ...) {
+//                  To be implemented
+//              }
+//
+// and call it via printAtSeg(1, "S%i: %.1f", 1, 3.14);
 
 void computePrimes(int pos) {
     for(int n = 1; ; n++) {
@@ -75,9 +75,8 @@ void busy_wait(uint32_t t) {
 }
 
 int main() {
-    piface_init();
-    spawn(computePower, 1);
-		spawn(computePrimes, 2);
-		spawn(computeExponential, 3);
-    computePower(0);
+	//this file does not include computeExponent!
+	piface_init();
+	spawn(computePower, 1);
+	computePower(0);
 }

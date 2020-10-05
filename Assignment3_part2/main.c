@@ -45,8 +45,8 @@ void computeExponential(int pos) {
 // ------------------
 void printAtSeg(int seg, int num) { // To be implemented
 		if(seg>3 ||seg< 0){ return; }
-		int row=(seg/2) + 1; //first row =1
-		int col=(seg%2)*8 ; // first col =0
+		int row=(seg/2) ; //used their function
+		int col=(seg%2)*8 ; // used their function
 		piface_set_cursor(col,row); //set the cursor to point to a segment
 		PUTTOLDC("T%i:%d", seg, num);	//insert the new content at that location (override-text)
 
