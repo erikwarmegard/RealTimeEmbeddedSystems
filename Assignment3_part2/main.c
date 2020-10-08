@@ -15,9 +15,6 @@
     piface_puts(s); \
 }
 
-void piface_puts(char c[]);
-void piface_putc(char c);
-void piface_clear();
 
 int is_prime(int i) { //done by erik and johan
     for(int j=2; j<= i/2 ;j++ ){
