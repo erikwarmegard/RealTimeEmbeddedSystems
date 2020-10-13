@@ -20,13 +20,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "tinythreads.h"
-#include "rpi3.h"
-#include "piface.h"
+#include "lib/tinythreads.h"
+#include "lib/rpi3.h"
+#include "lib/piface.h"
 
-#include "rpi-armtimer.h"
-#include "rpi-systimer.h"
-#include "rpi-interrupts.h"
+#include "lib/rpi-armtimer.h"
+#include "lib/rpi-systimer.h"
+#include "lib/rpi-interrupts.h"
 
 __attribute__(( always_inline )) static inline void enable_interrupts() {
   __asm volatile("cpsie i \n"); //AIF???
@@ -48,24 +48,39 @@ __attribute__(( always_inline )) static inline void disable_interrupts() {
 // Mutex variable to guard critical sections
 mutex mute = MUTEX_INIT;
 
-
+//Paste here the code for printAtSeg that you implemented in Assignment 3
+// ------------------
+// |S0:XXXXXS1:XXXXX|
+// |S2:XXXXXS3:XXXXX|
+// ------------------
 void printAtSeg(int seg, const char* fmt, ...) {
-    //Paste here the code for printAtSeg that you implemented in Assignment 3    
-    // ------------------
-    // |S0:XXXXXS1:XXXXX| 
-    // |S2:XXXXXS3:XXXXX|
-    // ------------------
+
+	if(seg>3 || seg< 0){ return; }
+  va_list argus;
+  va_start(argus, fmt);
+	int row=(seg/2) ;
+	int col=(seg%2)*8 ;
+	piface_set_cursor(col,row); //set the cursor to point to a segment
+  PUTTOLDC(fmt, argus );
+  va_end(argus);
+  //PUTTOLDC("T%i:%d", seg, num);
+}
+void busy_wait(uint32_t t) {
+    for(volatile uint32_t i=0; i < t; )
+        i++;
 }
 
 void computeSomethingForever(int pos) {
     for(uint32_t i=0; i < MAXINT; i++)
     {
         lock(&mute);
-        printAtSeg(pos % 4, "%d_%d", pos, i);
-        unlock(&mute);  
+        printAtSeg(pos , "W%1d_%1d", pos, i);
+        busy_wait(500000u); //delay added for visualization purposes!!!
+        unlock(&mute);
+
         yield();
     }
-} 
+}
 
 // @brief The BCM2835 Interupt controller peripheral at it's base address
 static rpi_irq_controller_t* rpiIRQController =
@@ -84,10 +99,10 @@ void RPI_EnableARMTimerInterrupt(void)
 
 void initTimerInterrupts()
 {
-    RPI_EnableARMTimerInterrupt();  
+    RPI_EnableARMTimerInterrupt();
     /* Setup the system timer interrupt
        Timer frequency = Clk/256 * 0x400
-       0xF3C is about 1 second       
+       0xF3C is about 1 second
     */
     RPI_GetArmTimer()->Load = 0xF3C;
     /* Setup the ARM Timer */
@@ -97,17 +112,14 @@ void initTimerInterrupts()
             RPI_ARMTIMER_CTRL_INT_ENABLE |
             RPI_ARMTIMER_CTRL_PRESCALE_256;
     /* Enable interrupts! */
-    ENABLE();    
+    ENABLE();
 }
 
 int main() {
-    piface_init(); 
+    piface_init();
     initTimerInterrupts();
     spawn(computeSomethingForever, 3);
     spawn(computeSomethingForever, 2);
     spawn(computeSomethingForever, 1);
     computeSomethingForever(0);
 }
-
-
-
