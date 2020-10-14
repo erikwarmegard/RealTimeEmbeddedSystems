@@ -124,12 +124,11 @@ void lock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
     //if its 1 you can use it becasue it already locked(being used)
     if(m->locked == 1){
       //add task to waitingQ if they cant run
-      //m->waitQ
-      //thread waitQ;
+      m->waitQ =current; //thread waitQ;
+      thread p = dequeue(&readyQ);
+      dispatch(p);
     }
-    else{
-      m->locked =1;
-    }
+    else{ m->locked =1;}
 
     count++;
 }
@@ -137,7 +136,10 @@ void lock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
 void unlock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
     // To be implemented!!!
     if(m->locked==1){
-      //return task to readQ list? or let them run from here?
+      if(m->waitQ != NULL){
+          dispatch(m->waitQ);
+          m->waitQ=NULL;
+      }
       m->locked=0;
     }
 }
