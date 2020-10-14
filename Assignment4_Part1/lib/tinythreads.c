@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "rpi-interrupts.h"
+#include "piface.h"
 
 __attribute__(( always_inline )) static inline void enable_interrupts() {
   __asm volatile("cpsie i \n"); //AIF???
@@ -128,7 +129,9 @@ void generate_Periodic_Tasks(){
 }
 
 void scheduler_RR(){
-    // To be implemented!!!
+	DISABLE();
+	piface_putc((int)'a');
+	ENABLE();
 }
 
 void scheduler_RM(){
@@ -141,5 +144,10 @@ void scheduler_EDF()
 }
 
 void scheduler(){
+	/*
+	while(1) {
+		piface_putc((int)'a');
+	}
+	*/
     scheduler_RR();
 }

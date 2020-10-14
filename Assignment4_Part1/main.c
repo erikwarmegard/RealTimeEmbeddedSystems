@@ -81,7 +81,7 @@ void computeSomethingForever(int pos) {
         busy_wait(700000u); //delay added for visualization purposes!!!
         unlock(&mute);
 
-        yield();
+        // yield();
     }
 }
 
