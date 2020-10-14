@@ -130,7 +130,9 @@ void generate_Periodic_Tasks(){
 
 void scheduler_RR(){
 	DISABLE();
-	piface_putc((int)'a');
+	thread p = dequeue(&readyQ);
+	enqueue(current, &readyQ);
+	dispatch(p);
 	ENABLE();
 }
 
