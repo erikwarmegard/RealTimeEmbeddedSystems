@@ -117,7 +117,6 @@ void yield(void) {
     ENABLE();
 }
 
-long long count=0;
 
 void lock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
     // To be implemented!!!
