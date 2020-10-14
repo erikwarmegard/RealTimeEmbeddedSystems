@@ -56,14 +56,19 @@ mutex mute = MUTEX_INIT;
 void printAtSeg(int seg, const char* fmt, ...) {
 
 	if(seg>3 || seg< 0){ return; }
-  va_list argus;
-  va_start(argus, fmt);
+  va_list args;
+  va_start(args, fmt);
 	int row=(seg/2) ;
 	int col=(seg%2)*8 ;
 	piface_set_cursor(col,row); //set the cursor to point to a segment
-  PUTTOLDC(fmt, argus );
-  va_end(argus);
-  //PUTTOLDC("T%i:%d", seg, num);
+
+
+  char s[8];
+  sprintf(s, fmt, va_arg(args, int), va_arg(args, int));
+  //piface_puts(s);
+  piface_putsx(s);
+
+  va_end(args);
 }
 void busy_wait(uint32_t t) {
     for(volatile uint32_t i=0; i < t; )
