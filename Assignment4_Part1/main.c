@@ -64,7 +64,7 @@ void printAtSeg(int seg, const char* fmt, ...) {
   char s[100];
   sprintf(s, fmt, va_arg(args, int), va_arg(args, int));
   //piface_puts(s);
-  piface_putsx(s);
+  piface_puts(s);
 
   va_end(args);
 }
