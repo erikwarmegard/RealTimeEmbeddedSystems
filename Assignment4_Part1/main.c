@@ -46,7 +46,7 @@ __attribute__(( always_inline )) static inline void disable_interrupts() {
 }
 
 // Mutex variable to guard critical sections
-  mutex mute = MUTEX_INIT;
+mutex mute = MUTEX_INIT;
 
 //Paste here the code for printAtSeg that you implemented in Assignment 3
 // ------------------
@@ -77,8 +77,8 @@ void computeSomethingForever(int pos) {
     for(uint32_t i=0; i < MAXINT; i++)
     {
         lock(&mute);
-        printAtSeg(pos % 4 , "W%d_%d", pos, i);
-        busy_wait(10000u); //delay added for visualization purposes!!!
+        printAtSeg(pos , "W%d_%d", pos, i);
+        busy_wait(700000u); //delay added for visualization purposes!!!
         unlock(&mute);
 
         // yield();

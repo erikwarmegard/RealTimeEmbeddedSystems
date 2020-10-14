@@ -27,8 +27,8 @@ __attribute__(( always_inline )) static inline void disable_interrupts() {
 #define RUN 			1
 #define STOP 			0
 
-#define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4;
-
+#define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4;    
+                   
 struct thread_block {
     void (*function)(int);   // code to run
     int arg;                 // argument to the above
@@ -100,7 +100,7 @@ void spawn(void (* function)(int), int arg) {
         current->function(current->arg);
         DISABLE();
         enqueue(current, &freeQ);
-        dispatch(dequeue(&readyQ));
+        dispatch(dequeue(&readyQ));    
     }
     SETSTACK(&newp->context, &newp->stack);
     enqueue(newp, &readyQ);
@@ -117,48 +117,30 @@ void yield(void) {
     ENABLE();
 }
 
-long long count=0;
-
-void lock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
+void lock(mutex *m) {
     // To be implemented!!!
-    //if its 0 -> you can use this resource
-    //if its 1 you can use it becasue it already locked(being used)
-    if(m->locked == 1){
-      //add task to waitingQ if they cant run
-      m->waitQ
-      //thread waitQ;
-    }
-    else{
-      m->locked =1;
-    }
-
-    count++;
 }
 
-void unlock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
+void unlock(mutex *m) {
     // To be implemented!!!
-    if(m->locked==1){
-      //return task to readQ list? or let them run from here?
-      m->locked=0;
-    }
 }
 
 void generate_Periodic_Tasks(){
 }
 
 void scheduler_RR(){
-  yield();
-	//piface_putc((int)'a');
-
+	DISABLE();
+	piface_putc((int)'a');
+	ENABLE();
 }
 
 void scheduler_RM(){
-
+    
 }
 
 void scheduler_EDF()
 {
-
+    
 }
 
 void scheduler(){
