@@ -227,12 +227,12 @@ void piface_clear(void){
 
 void piface_set_cursor(uint8_t col, uint8_t row)
 {
-    uint8_t t = col < 39 ? col : 39;
-    col = t > 0 ? t : 0;
-    t = row < 1 ? row : 1;
-    row = t > 0 ? row : 0;
+	 uint8_t t = col < 39 ? col : 39;
+	 col = t > 0 ? t : 0;
+	 t = row < 1 ? row : 1;
+	 row = t > 0 ? row : 0;
 
-    uint8_t addr = col + ROW_OFFSETS[row];
-    addr = addr % 80;
-    lcd_write_cmd( 0x80 | addr );
+	 uint8_t addr = col + ROW_OFFSETS[row];
+	 addr = addr % 80;
+	 lcd_write_cmd( 0x80 | addr );
 }

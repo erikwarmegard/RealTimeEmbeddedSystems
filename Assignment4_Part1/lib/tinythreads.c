@@ -118,30 +118,29 @@ void yield(void) {
 }
 
 
-void lock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
+void lock(mutex *m) { //JOHAN changed -14/10/2020
     // To be implemented!!!
-    //if its 0 -> you can use this resource
-    //if its 1 you can use it becasue it already locked(being used)
     if(m->locked == 1){
-      //add task to waitingQ if they cant run
-      m->waitQ =current; //thread waitQ;
+      DISABLE();
+      m->waitQ = current; //save the current stask
       thread p = dequeue(&readyQ);
+      //p->next=NULL;
       dispatch(p);
+      ENABLE();
     }
-    else{ m->locked =1;}
-
-    count++;
+    else{ m->locked =1; }
 }
 
 void unlock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
-    // To be implemented!!!
-    if(m->locked==1){
-      if(m->waitQ != NULL){
+  DISABLE();
+  if(m->locked==1){
+    if(m->waitQ != NULL){
           dispatch(m->waitQ);
           m->waitQ=NULL;
-      }
-      m->locked=0;
     }
+  }
+  ENABLE();
+  m->locked=0;
 }
 
 void generate_Periodic_Tasks(){
