@@ -55,16 +55,17 @@ mutex mute = MUTEX_INIT;
 void printAtSeg(int seg, const char* fmt, ...) {
     //Paste here the code for printAtSeg that you implemented in Assignment 3
     // ------------------
-    // |S0:XXXXXS1:XXXXX| 
+    // |S0:XXXXXS1:XXXXX|
     // |S2:XXXXXS3:XXXXX|
     // ------------------
 }
 
 void computeSomething(int pos) {
     lock(&mute);
-    printAtSeg(pos % 4, "%d %d", pos, ticks);
-    unlock(&mute);        
-}  
+    printAtSeg(pos % 4, "S%d %d", pos, ticks);
+    busy_wait(10000u);
+    unlock(&mute);
+}
 
 void busy_wait(uint32_t t) {
     for(volatile uint32_t i=0; i < t; )
@@ -88,10 +89,10 @@ void RPI_EnableARMTimerInterrupt(void)
 
 void initTimerInterrupts()
 {
-    RPI_EnableARMTimerInterrupt();  
+    RPI_EnableARMTimerInterrupt();
     /* Setup the system timer interrupt
        Timer frequency = Clk/256 * 0x400
-       0xF3C is about 1 second       
+       0xF3C is about 1 second
     */
     RPI_GetArmTimer()->Load = 0xF3C;
     /* Setup the ARM Timer */
@@ -105,12 +106,12 @@ void initTimerInterrupts()
 }
 
 int main() {
-    piface_init(); 
+    piface_init();
 
     spawnWithDeadline(3, 3, computeSomething, 0);
     spawnWithDeadline(5, 5, computeSomething, 1);
     spawnWithDeadline(7, 7, computeSomething, 2);
-   
+
     initTimerInterrupts();
     while (1)
         no_operation();
