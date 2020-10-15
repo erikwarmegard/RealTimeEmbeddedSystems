@@ -1,0 +1,13 @@
+Because the interrupts you have enabled may literally occur at any time, you should now take a moment
+to study the definition of the macros DISABLE() and ENABLE() and their placement inside the functions of tinythreads.c.
+What is its purpose? 
+- The two functions protect important operations from unwanted interrupts. DISABLE()-function temporarily disables all
+interrupts and the ENABLE()-function enables interrupts again. In this timeslot between DISABLE() and ENABLE(), one can safely
+conduct operations without the risk of interrupts which might interfer and destroy the operation. For instance, context switching. 
+
+What could happen if a yield() call were injected at the worst place possible within 
+functions like dispatch() or enqueue()?
+- A problem will arise if an interrupt and Mutex exclusion wants to access the same resourse. This problem can be solved with the
+use of lock() and unlock() 
+
+What about injecting such a call into yield() itself?
