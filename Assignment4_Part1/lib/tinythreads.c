@@ -151,7 +151,6 @@ void unlock(mutex *m) {
           thread temp = dequeue(&m->waitQ);
       		enqueue(current, &readyQ);
       		dispatch(temp);
-          if((m->waitQ)==NULL){m->locked=0;}
           ENABLE();
     }
     else{m->locked=0;}
@@ -164,8 +163,12 @@ void generate_Periodic_Tasks(){
 }
 
 void scheduler_RR(){
-  yield();
-	//piface_putc((int)'a');
+  //yield();
+  if (readyQ != NULL){
+    thread p = dequeue(&readyQ);
+    enqueue(current, &readyQ);
+    dispatch(p);
+  }
 
 }
 
