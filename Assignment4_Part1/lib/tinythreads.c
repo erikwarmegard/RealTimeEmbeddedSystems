@@ -121,36 +121,42 @@ void yield(void) {
 void lock(mutex *m) {
     if(m->locked == 0){ m->locked =1; }
     else if(m->locked >= 1){
-
+    /*
     thread temp =m->waitQ;
     for(int i=1; i<(m->locked); i++){
       temp = temp->next;
     }
     temp =current;
-    m->locked = (m->locked) + 1;
-    DISABLE();
-    if (readyQ != NULL){
-      thread p = dequeue(&readyQ);
-      dispatch(p);
-    }
-    ENABLE();
+    */
+      DISABLE();
+      enqueue(current, &m->waitQ);
+      m->locked = (m->locked) + 1;
+      if (readyQ != NULL){
+        thread p = dequeue(&readyQ);
+        dispatch(p);
+      }
+      ENABLE();
     }
 }
 
 void unlock(mutex *m) {
 
-  if(m->locked>1){
-    if(m->waitQ != NULL){
+  if(m->locked >=1){
+    if(m->waitQ !=NULL){
           DISABLE();
-          thread temp = m->waitQ;
-          m->waitQ= m->waitQ->next;
+          //thread temp = m->waitQ;
+          //m->waitQ= m->waitQ->next;
           m->locked = (m->locked) - 1;
-          dispatch(m->waitQ);
+          //dispatch(temp);
+          thread temp = dequeue(&m->waitQ);
+      		enqueue(current, &readyQ);
+      		dispatch(temp);
+          if((m->waitQ)==NULL){m->locked=0;}
           ENABLE();
     }
+    else{m->locked=0;}
   }
-  else if(m->locked==1){  m->locked=0; }
-
+  //else{  m->locked=0; }
 
 }
 
