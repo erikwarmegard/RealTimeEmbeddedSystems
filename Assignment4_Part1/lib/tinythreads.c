@@ -118,29 +118,40 @@ void yield(void) {
 }
 
 
-void lock(mutex *m) { //JOHAN changed -14/10/2020
-    // To be implemented!!!
-    if(m->locked == 1){
-      DISABLE();
-      m->waitQ = current; //save the current stask
-      thread p = dequeue(&readyQ);
-      //p->next=NULL;
-      dispatch(p);
-      ENABLE();
+void lock(mutex *m) {
+    if(m->locked == 0){ m->locked =1; }
+    else if(m->locked >= 1){
+
+    thread temp =m->waitQ;
+    for(int i=1; i<(m->locked); i++){
+      temp = temp->next;
     }
-    else{ m->locked =1; }
+    temp =current;
+    m->locked = (m->locked) + 1;
+    DISABLE();
+    if (readyQ != NULL){
+      thread p = dequeue(&readyQ);
+      dispatch(p);
+    }
+    ENABLE();
+    }
 }
 
-void unlock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
-  DISABLE();
-  if(m->locked==1){
+void unlock(mutex *m) {
+
+  if(m->locked>1){
     if(m->waitQ != NULL){
+          DISABLE();
+          thread temp = m->waitQ;
+          m->waitQ= m->waitQ->next;
+          m->locked = (m->locked) - 1;
           dispatch(m->waitQ);
-          m->waitQ=NULL;
+          ENABLE();
     }
   }
-  ENABLE();
-  m->locked=0;
+  else if(m->locked==1){  m->locked=0; }
+
+
 }
 
 void generate_Periodic_Tasks(){
@@ -167,5 +178,5 @@ void scheduler(){
 		piface_putc((int)'a');
 	}
 	*/
-    scheduler_RR();
+  scheduler_RR();
 }

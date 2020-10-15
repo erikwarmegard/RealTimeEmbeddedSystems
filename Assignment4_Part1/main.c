@@ -77,10 +77,10 @@ void computeSomethingForever(int pos) {
     {
         lock(&mute);
         printAtSeg(pos%4 , "W%d_%d", pos, i);
-        busy_wait(50000u); //delay added for visualization purposes!!!
+        busy_wait(100000u); //delay added for visualization purposes!!!
         unlock(&mute);
 
-        // yield();
+        //yield();
     }
 }
 
