@@ -63,7 +63,6 @@ void printAtSeg(int seg, const char* fmt, ...) {
 	piface_set_cursor(col,row); //set the cursor to point to a segment
   char s[100];
   sprintf(s, fmt, va_arg(args, int), va_arg(args, int));
-  //piface_puts(s);
   piface_puts(s);
 
   va_end(args);
@@ -77,8 +76,8 @@ void computeSomethingForever(int pos) {
     for(uint32_t i=0; i < MAXINT; i++)
     {
         lock(&mute);
-        printAtSeg(pos , "W%d_%d", pos, i);
-        busy_wait(700000u); //delay added for visualization purposes!!!
+        printAtSeg(pos%4 , "W%d_%d", pos, i);
+        busy_wait(50000u); //delay added for visualization purposes!!!
         unlock(&mute);
 
         // yield();

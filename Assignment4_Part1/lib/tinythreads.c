@@ -27,8 +27,8 @@ __attribute__(( always_inline )) static inline void disable_interrupts() {
 #define RUN 			1
 #define STOP 			0
 
-#define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4;    
-                   
+#define SETSTACK(buf,a) *((unsigned int *)(buf)+8) = (unsigned int)(a) + STACKSIZE - 4;
+
 struct thread_block {
     void (*function)(int);   // code to run
     int arg;                 // argument to the above
@@ -100,7 +100,7 @@ void spawn(void (* function)(int), int arg) {
         current->function(current->arg);
         DISABLE();
         enqueue(current, &freeQ);
-        dispatch(dequeue(&readyQ));    
+        dispatch(dequeue(&readyQ));
     }
     SETSTACK(&newp->context, &newp->stack);
     enqueue(newp, &readyQ);
@@ -117,32 +117,48 @@ void yield(void) {
     ENABLE();
 }
 
-void lock(mutex *m) {
+
+void lock(mutex *m) { //JOHAN changed -14/10/2020
     // To be implemented!!!
+    if(m->locked == 1){
+      DISABLE();
+      m->waitQ = current; //save the current stask
+      thread p = dequeue(&readyQ);
+      //p->next=NULL;
+      dispatch(p);
+      ENABLE();
+    }
+    else{ m->locked =1; }
 }
 
-void unlock(mutex *m) {
-    // To be implemented!!!
+void unlock(mutex *m) { //JOHAN changed 16:20 -14/10/2020
+  DISABLE();
+  if(m->locked==1){
+    if(m->waitQ != NULL){
+          dispatch(m->waitQ);
+          m->waitQ=NULL;
+    }
+  }
+  ENABLE();
+  m->locked=0;
 }
 
 void generate_Periodic_Tasks(){
 }
 
 void scheduler_RR(){
-	DISABLE();
-	thread p = dequeue(&readyQ);
-	enqueue(current, &readyQ);
-	dispatch(p);
-	ENABLE();
+  yield();
+	//piface_putc((int)'a');
+
 }
 
 void scheduler_RM(){
-    
+
 }
 
 void scheduler_EDF()
 {
-    
+
 }
 
 void scheduler(){
