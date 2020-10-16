@@ -237,11 +237,8 @@ int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)
 // Remember, taskQ points to asked that have been spawned
 // You generate tasks according to their period, if the task is not running,
 // or if you not find the task in the readyQ (findTask)
-	thread q = taskQ;
-	while(q != NULL){
-		enqueue(q ,&readyQ);
-		q = q->next;
-	}
+
+
 }
 void scheduler_RR(){
 
@@ -249,9 +246,14 @@ void scheduler_RR(){
 
 void scheduler_RM(){
     // To be implemented!!!
-
 		//add to the ready que
 		// if what have the lowest deadline now?
+		current->Rel_Period_Deadline+=current->Period_Deadline;
+		enqueue(current, &readyQ);
+
+		thread p = dequeue(&readyQ);
+		dispatch(p);
+
 }
 
 void scheduler_EDF(){
