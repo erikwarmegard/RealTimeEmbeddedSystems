@@ -58,6 +58,17 @@ void printAtSeg(int seg, const char* fmt, ...) {
     // |S0:XXXXXS1:XXXXX|
     // |S2:XXXXXS3:XXXXX|
     // ------------------
+  if(seg>3 || seg< 0){ return; }
+  va_list args;
+  va_start(args, fmt);
+  int row=(seg/2) ;
+  int col=(seg%2)*8 ;
+  piface_set_cursor(col,row); //set the cursor to point to a segment
+  char s[100];
+  sprintf(s, fmt, va_arg(args, int), va_arg(args, int));
+  piface_puts(s);
+
+  va_end(args);
 }
 
 void computeSomething(int pos) {

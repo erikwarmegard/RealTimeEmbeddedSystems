@@ -101,7 +101,7 @@ static void enqueue(thread p, thread *queue) {
 		}
 		else{ //loop to find where to put it
       thread q = *queue;
-      while ((q->next !=NULL) && q->next->Rel_Period_Deadline > p->Rel_Period_Deadline){
+      while ((q->next !=NULL) && q->next->Rel_Period_Deadline < p->Rel_Period_Deadline){
 				q = q->next;
 			}
 			p->next=q->next;
@@ -147,6 +147,8 @@ void spawn(void (* function)(int), int arg) {
     ENABLE();
 }
 
+
+
 void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) { //only added 2rows
     // To be implemented!!!
 		thread newp;
@@ -158,8 +160,7 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
     newp->next = NULL;
 		newp->Period_Deadline=deadline;
 		newp->Rel_Period_Deadline=rel_deadline;
-		if(findTask(deadline, rel_deadline, (* function)(int), arg)){ enqueue(newp, &taskQ); }
-		if(findTaskReady(deadline, rel_deadline, (* function)(int), arg)){ enqueue(newp, &readyQ); }
+		if(!findTask(deadline, rel_deadline, function, arg)){ enqueue(newp, &taskQ); }
 
     if (setjmp(newp->context) == 1) {
         ENABLE();
@@ -169,7 +170,7 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
         dispatch(dequeue(&readyQ));
     }
     SETSTACK(&newp->context, &newp->stack);
-		//tagit bort rad kod ()
+		enqueue(newp, &readyQ);
     ENABLE();
 }
 
@@ -221,7 +222,6 @@ int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)
     {
         if ((q->function == function) &&
             (q->arg == arg) &&
-            (q->Period_Deadline == deadline) &&
             (q->Rel_Period_Deadline == rel_deadline)){
             found = 1;
             break;
@@ -239,7 +239,6 @@ int findTaskReady(unsigned int deadline, unsigned int rel_deadline, void (* func
     {
         if ((q->function == function) &&
             (q->arg == arg) &&
-            (q->Period_Deadline == deadline) &&
             (q->Rel_Period_Deadline == rel_deadline)){
             found = 1;
             break;
@@ -255,12 +254,12 @@ void generate_Periodic_Tasks() {
 // You generate tasks according to their period, if the task is not running,
 // or if you not find the task in the readyQ (findTask)
 	thread q = taskQ;
-
 	while(q != NULL){
-		if(ticks % q->Period_Deadline == 0){
-			spawnWithDeadline(q->Period_Deadline, q->Rel_Period_Deadline,q-> )
-			enqueue(q, &readyQ);
-			q->Period_Deadline+=q->Rel_Period_Deadline;
+		if(ticks % q->Rel_Period_Deadline == 0){
+
+			if(!findTaskReady(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) || !(current==q) ){
+				spawnWithDeadline((q->Period_Deadline + q->Rel_Period_Deadline), q->Rel_Period_Deadline,q->function, q->arg );
+			}
 		}
 		q = q->next;
 	}
@@ -275,12 +274,10 @@ void scheduler_RM(){
     // To be implemented!!!
 		//add to the ready que
 		// if what have the lowest deadline now?
-
-		//current->Period_Deadline+=current->Rel_Period_Deadline;
-		//enqueue(current, &readyQ);
-
-		thread p = dequeue(&readyQ);
-		dispatch(p);
+		if(readyQ !=NULL){
+			thread p = dequeue(&readyQ);
+			dispatch(p);
+		}
 
 }
 
