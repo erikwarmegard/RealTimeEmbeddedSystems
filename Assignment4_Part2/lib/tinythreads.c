@@ -94,22 +94,18 @@ static void enqueue(thread p, thread *queue) {
         *queue = p;
 				return;
     }
-		else if((*queue)->Period_Deadline > p->Period_Deadline){ //check aginst the head for highest deadline
-			p->next = queue;
+		else if((*queue)->Rel_Period_Deadline > p->Rel_Period_Deadline){ //check aginst the head for highest deadline
+			p->next = *queue;
 			*queue = p;
 			return;
 		}
 		else{ //loop to find where to put it
       thread q = *queue;
-      while (q->next){
-				if(q->next->Period_Deadline > p->Period_Deadline){
-					p->next=q->next;
-					q->next=p;
-					return; //nothing more to be done
-				}
+      while ((q->next !=NULL) && q->next->Rel_Period_Deadline > p->Rel_Period_Deadline){
 				q = q->next;
 			}
-      q->next = p;
+			p->next=q->next;
+			q->next=p;
     }
 }
 
@@ -162,6 +158,9 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
     newp->next = NULL;
 		newp->Period_Deadline=deadline;
 		newp->Rel_Period_Deadline=rel_deadline;
+		if(findTask(deadline, rel_deadline, (* function)(int), arg)){ enqueue(newp, &taskQ); }
+		if(findTaskReady(deadline, rel_deadline, (* function)(int), arg)){ enqueue(newp, &readyQ); }
+
     if (setjmp(newp->context) == 1) {
         ENABLE();
         current->function(current->arg);
@@ -170,7 +169,7 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
         dispatch(dequeue(&readyQ));
     }
     SETSTACK(&newp->context, &newp->stack);
-    enqueue(newp, &readyQ);
+		//tagit bort rad kod ()
     ENABLE();
 }
 
@@ -214,7 +213,7 @@ void unlock(mutex *m) {
 	}
 }
 
-int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg)
+int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //find if task is in the taskQ
 {
     thread q = taskQ;
     int found = 0;
@@ -232,14 +231,42 @@ int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)
     return found;
 }
 
-	void generate_Periodic_Tasks() {
+int findTaskReady(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //NEW another for readyQ
+{
+    thread q = readyQ;
+    int found = 0;
+    while(q != NULL)
+    {
+        if ((q->function == function) &&
+            (q->arg == arg) &&
+            (q->Period_Deadline == deadline) &&
+            (q->Rel_Period_Deadline == rel_deadline)){
+            found = 1;
+            break;
+        }
+        q = q->next;
+    }
+    return found;
+}
+
+void generate_Periodic_Tasks() {
 // To be implemented!!!
 // Remember, taskQ points to asked that have been spawned
 // You generate tasks according to their period, if the task is not running,
 // or if you not find the task in the readyQ (findTask)
+	thread q = taskQ;
 
+	while(q != NULL){
+		if(ticks % q->Period_Deadline == 0){
+			spawnWithDeadline(q->Period_Deadline, q->Rel_Period_Deadline,q-> )
+			enqueue(q, &readyQ);
+			q->Period_Deadline+=q->Rel_Period_Deadline;
+		}
+		q = q->next;
+	}
 
 }
+
 void scheduler_RR(){
 
 }
@@ -248,8 +275,9 @@ void scheduler_RM(){
     // To be implemented!!!
 		//add to the ready que
 		// if what have the lowest deadline now?
-		current->Rel_Period_Deadline+=current->Period_Deadline;
-		enqueue(current, &readyQ);
+
+		//current->Period_Deadline+=current->Rel_Period_Deadline;
+		//enqueue(current, &readyQ);
 
 		thread p = dequeue(&readyQ);
 		dispatch(p);

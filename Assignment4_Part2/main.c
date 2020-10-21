@@ -64,6 +64,7 @@ void computeSomething(int pos) {
     lock(&mute);
     printAtSeg(pos % 4, "S%d %d", pos, ticks);
     busy_wait(10000u);
+
     unlock(&mute);
 }
 
