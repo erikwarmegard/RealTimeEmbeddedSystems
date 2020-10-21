@@ -101,7 +101,10 @@ void __attribute__((interrupt("IRQ"))) interrupt_vector(void)
         RPI_GetArmTimer()->IRQClear = 1;
         generate_Periodic_Tasks();
         scheduler();
+
     }
+
+
 }
 
 

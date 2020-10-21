@@ -2,7 +2,7 @@
 
 OBJS	= lib/piface.o lib/rpi-armtimer.o lib/rpi-gpio.o lib/rpi-interrupts.o lib/rpi-systimer.o lib/startup.o lib/syscalls.o lib/tinythreads.o main.o
 ELF		= rteskernel4.elf
-MAIN	= rteskernel6.img
+MAIN	= rteskernel4.img
 
 CROSS	= arm-none-eabi-
 CC		= $(CROSS)gcc

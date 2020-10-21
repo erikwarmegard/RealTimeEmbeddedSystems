@@ -53,11 +53,7 @@ __attribute__(( always_inline )) static inline void no_operation() {
 mutex mute = MUTEX_INIT;
 
 void printAtSeg(int seg, const char* fmt, ...) {
-    //Paste here the code for printAtSeg that you implemented in Assignment 3
-    // ------------------
-    // |S0:XXXXXS1:XXXXX|
-    // |S2:XXXXXS3:XXXXX|
-    // ------------------
+
   if(seg>3 || seg< 0){ return; }
   va_list args;
   va_start(args, fmt);
@@ -67,7 +63,6 @@ void printAtSeg(int seg, const char* fmt, ...) {
   char s[100];
   sprintf(s, fmt, va_arg(args, int), va_arg(args, int));
   piface_puts(s);
-
   va_end(args);
 }
 
@@ -123,6 +118,7 @@ int main() {
     spawnWithDeadline(3, 3, computeSomething, 0);
     spawnWithDeadline(5, 5, computeSomething, 1);
     spawnWithDeadline(7, 7, computeSomething, 2);
+
 
     initTimerInterrupts();
     while (1)

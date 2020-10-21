@@ -160,8 +160,10 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
     newp->next = NULL;
 		newp->Period_Deadline=deadline;
 		newp->Rel_Period_Deadline=rel_deadline;
-		if(!findTask(deadline, rel_deadline, function, arg)){ enqueue(newp, &taskQ); }
-
+		if(!findTask(deadline, rel_deadline, function, arg)){
+			enqueue(newp, &taskQ);
+		}
+		enqueue(newp, &readyQ);
     if (setjmp(newp->context) == 1) {
         ENABLE();
         current->function(current->arg);
@@ -170,7 +172,7 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
         dispatch(dequeue(&readyQ));
     }
     SETSTACK(&newp->context, &newp->stack);
-		enqueue(newp, &readyQ);
+
     ENABLE();
 }
 
@@ -263,7 +265,6 @@ void generate_Periodic_Tasks() {
 		}
 		q = q->next;
 	}
-
 }
 
 void scheduler_RR(){
@@ -274,6 +275,8 @@ void scheduler_RM(){
     // To be implemented!!!
 		//add to the ready que
 		// if what have the lowest deadline now?
+		PUTTOLDC("RM method%s", "!");
+
 		if(readyQ !=NULL){
 			thread p = dequeue(&readyQ);
 			dispatch(p);
