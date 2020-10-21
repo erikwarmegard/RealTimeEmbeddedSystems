@@ -121,6 +121,6 @@ int main() {
 
 
     initTimerInterrupts();
-    while (1)
-        no_operation();
+    while (1) no_operation();
+
 }

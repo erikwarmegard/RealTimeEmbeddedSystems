@@ -89,24 +89,24 @@ static void initialize(void) {
 // You might want to change enqueue with insertion sort.
 // Otherwise, you will have to sort the readyQ in selected scheduling algorithm.
 static void enqueue(thread p, thread *queue) {
-    p->next = NULL;
-    if (*queue == NULL) { //empty
-        *queue = p;
-				return;
-    }
-		else if((*queue)->Rel_Period_Deadline > p->Rel_Period_Deadline){ //check aginst the head for highest deadline
-			p->next = *queue;
+	p->next = NULL;
+	if (*queue == NULL) { //empty
 			*queue = p;
 			return;
+	}
+	else if((*queue)->Rel_Period_Deadline > p->Rel_Period_Deadline){ //check aginst the head for highest deadline
+		p->next = *queue;
+		*queue = p;
+		return;
+	}
+	else{ //loop to find where to put it
+		thread q = *queue;
+		while ((q->next !=NULL) && q->next->Rel_Period_Deadline < p->Rel_Period_Deadline){
+			q = q->next;
 		}
-		else{ //loop to find where to put it
-      thread q = *queue;
-      while ((q->next !=NULL) && q->next->Rel_Period_Deadline < p->Rel_Period_Deadline){
-				q = q->next;
-			}
-			p->next=q->next;
-			q->next=p;
-    }
+		p->next=q->next;
+		q->next=p;
+	}
 }
 
 static thread dequeue(thread *queue) {
@@ -130,7 +130,6 @@ void spawn(void (* function)(int), int arg) {
     thread newp;
     DISABLE();
     if (!initialized) initialize();
-
     newp = dequeue(&freeQ);
     newp->function = function;
     newp->arg = arg;
@@ -147,23 +146,36 @@ void spawn(void (* function)(int), int arg) {
     ENABLE();
 }
 
-
+int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //find if task is in the taskQ
+{
+    thread q = &taskQ;
+    int found = 0;
+    while(q != NULL)
+    {
+        if ((q->function == function) &&
+            (q->arg == arg) &&
+            (q->Rel_Period_Deadline == rel_deadline)){
+            found = 1;
+            break;
+        }
+        q = q->next;
+    }
+    return found;
+}
 
 void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) { //only added 2rows
     // To be implemented!!!
+		piface_putc('1');
 		thread newp;
     DISABLE();
-    if (!initialized) initialize();
+    if (!initialized){ initialize(); }
     newp = dequeue(&freeQ);
     newp->function = function;
     newp->arg = arg;
     newp->next = NULL;
 		newp->Period_Deadline=deadline;
 		newp->Rel_Period_Deadline=rel_deadline;
-		if(!findTask(deadline, rel_deadline, function, arg)){
-			enqueue(newp, &taskQ);
-		}
-		enqueue(newp, &readyQ);
+
     if (setjmp(newp->context) == 1) {
         ENABLE();
         current->function(current->arg);
@@ -172,8 +184,12 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
         dispatch(dequeue(&readyQ));
     }
     SETSTACK(&newp->context, &newp->stack);
-
+		if(!findTask(deadline, rel_deadline, function, arg)){
+			enqueue(newp, &taskQ);
+		}
+		enqueue(newp, &readyQ);
     ENABLE();
+		piface_putc('9');
 }
 
 void yield(void) {
@@ -216,24 +232,9 @@ void unlock(mutex *m) {
 	}
 }
 
-int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //find if task is in the taskQ
-{
-    thread q = taskQ;
-    int found = 0;
-    while(q != NULL)
-    {
-        if ((q->function == function) &&
-            (q->arg == arg) &&
-            (q->Rel_Period_Deadline == rel_deadline)){
-            found = 1;
-            break;
-        }
-        q = q->next;
-    }
-    return found;
-}
 
-int findTaskReady(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //NEW another for readyQ
+
+int findTaskReadyQ(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //NEW another for readyQ
 {
     thread q = readyQ;
     int found = 0;
@@ -255,11 +256,11 @@ void generate_Periodic_Tasks() {
 // Remember, taskQ points to asked that have been spawned
 // You generate tasks according to their period, if the task is not running,
 // or if you not find the task in the readyQ (findTask)
+	piface_putc('0');
 	thread q = taskQ;
 	while(q != NULL){
 		if(ticks % q->Rel_Period_Deadline == 0){
-
-			if(!findTaskReady(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) || !(current==q) ){
+			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg)){ // || !(current==q)
 				spawnWithDeadline((q->Period_Deadline + q->Rel_Period_Deadline), q->Rel_Period_Deadline,q->function, q->arg );
 			}
 		}
@@ -275,12 +276,13 @@ void scheduler_RM(){
     // To be implemented!!!
 		//add to the ready que
 		// if what have the lowest deadline now?
-		PUTTOLDC("RM method%s", "!");
-
+		piface_putc('3');
+		DISABLE();
 		if(readyQ !=NULL){
 			thread p = dequeue(&readyQ);
 			dispatch(p);
 		}
+		ENABLE();
 
 }
 
@@ -290,4 +292,5 @@ void scheduler_EDF(){
 
 void scheduler(){
     scheduler_RM();
+		piface_putc('2');
 }
