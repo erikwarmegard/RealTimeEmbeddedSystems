@@ -119,6 +119,19 @@ static thread dequeue(thread *queue) {
     return p;
 }
 
+static thread removeLast(thread *queue) { //new
+
+    thread p = *queue;
+		thread last;
+		if(!(*queue)){ PUTTOLDC("ops22%s", "!!2");	}
+    while (p->next->next) {
+        p = p->next;
+    }
+		last =p->next;
+		p->next=NULL;
+    return last;
+}
+
 static void dispatch(thread next) {
     if (setjmp(current->context) == 0) {
         current = next;
@@ -148,7 +161,7 @@ void spawn(void (* function)(int), int arg) {
 
 int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) //find if task is in the taskQ
 {
-    thread q = &taskQ;
+    thread q =taskQ;
     int found = 0;
     while(q != NULL)
     {
@@ -165,31 +178,40 @@ int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)
 
 void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) { //only added 2rows
     // To be implemented!!!
-		piface_putc('1');
+		//piface_putc('1');
+		if(rel_deadline==7){
+			PUTTOLDC("Head%d", taskQ->Rel_Period_Deadline);
+			PUTTOLDC("next%d", taskQ->next->Rel_Period_Deadline);
+
+		}
 		thread newp;
     DISABLE();
     if (!initialized){ initialize(); }
-    newp = dequeue(&freeQ);
+
+    newp = removeLast(&freeQ);
     newp->function = function;
     newp->arg = arg;
     newp->next = NULL;
 		newp->Period_Deadline=deadline;
 		newp->Rel_Period_Deadline=rel_deadline;
+		if(!findTask(deadline, rel_deadline, function, arg)){
+			enqueue(newp, &taskQ);
+		}
 
     if (setjmp(newp->context) == 1) {
         ENABLE();
         current->function(current->arg);
+				//while(readyQ!=NULL){ }  //nytt
         DISABLE();
         enqueue(current, &freeQ);
         dispatch(dequeue(&readyQ));
     }
     SETSTACK(&newp->context, &newp->stack);
-		if(!findTask(deadline, rel_deadline, function, arg)){
-			enqueue(newp, &taskQ);
-		}
 		enqueue(newp, &readyQ);
+		//PUTTOLDC("Head%d", readyQ->Rel_Period_Deadline);
+		//piface_putc('9');
     ENABLE();
-		piface_putc('9');
+
 }
 
 void yield(void) {
@@ -260,8 +282,10 @@ void generate_Periodic_Tasks() {
 	thread q = taskQ;
 	while(q != NULL){
 		if(ticks % q->Rel_Period_Deadline == 0){
-			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg)){ // || !(current==q)
-				spawnWithDeadline((q->Period_Deadline + q->Rel_Period_Deadline), q->Rel_Period_Deadline,q->function, q->arg );
+			piface_putc('5');
+			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) ){ // || !(current==q)
+				q->Period_Deadline+=q->Period_Deadline;
+				spawnWithDeadline(q->Period_Deadline+q->Rel_Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg );
 			}
 		}
 		q = q->next;
@@ -277,12 +301,12 @@ void scheduler_RM(){
 		//add to the ready que
 		// if what have the lowest deadline now?
 		piface_putc('3');
-		DISABLE();
+		//DISABLE();
 		if(readyQ !=NULL){
 			thread p = dequeue(&readyQ);
 			dispatch(p);
 		}
-		ENABLE();
+		//ENABLE();
 
 }
 
@@ -291,6 +315,7 @@ void scheduler_EDF(){
 }
 
 void scheduler(){
+	piface_putc('2');
     scheduler_RM();
-		piface_putc('2');
+
 }
