@@ -116,10 +116,9 @@ void initTimerInterrupts()
 
 int main() {
     piface_init();
-    spawnWithDeadline(3, 3, computeSomething, 0);
-    spawnWithDeadline(5, 5, computeSomething, 1);
     spawnWithDeadline(7, 7, computeSomething, 2);
-
+    spawnWithDeadline(5, 5, computeSomething, 1);
+    spawnWithDeadline(3, 3, computeSomething, 0);
 
 
 
