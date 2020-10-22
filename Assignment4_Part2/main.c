@@ -73,7 +73,7 @@ void busy_wait(uint32_t t) {
 
 void computeSomething(int pos) {
     lock(&mute);
-    printAtSeg(pos % 4, "S%d %d", pos, ticks);
+    printAtSeg(pos % 4, "S%d_%d", pos, ticks);
     busy_wait(100000u);
 
     unlock(&mute);
@@ -116,9 +116,10 @@ void initTimerInterrupts()
 
 int main() {
     piface_init();
-    spawnWithDeadline(7, 7, computeSomething, 2);
-    spawnWithDeadline(5, 5, computeSomething, 1);
     spawnWithDeadline(3, 3, computeSomething, 0);
+    spawnWithDeadline(5, 5, computeSomething, 1);
+    spawnWithDeadline(7, 7, computeSomething, 2);
+
 
 
 
