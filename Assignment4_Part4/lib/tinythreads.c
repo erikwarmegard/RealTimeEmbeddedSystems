@@ -178,8 +178,6 @@ int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)
 
 void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) { //only added 2rows
     // To be implemented!!!
-		//piface_putc('1');
-
 		thread newp;
     DISABLE();
     if (!initialized){ initialize(); }
@@ -201,7 +199,7 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
 		newp->Period_Deadline=deadline;
 		newp->Rel_Period_Deadline=rel_deadline;
 
-		//PUTTOLDC("Head%d", readyQ->Rel_Period_Deadline);
+
     if (setjmp(newp->context) == 1) {
         ENABLE();
         current->function(current->arg);
@@ -212,8 +210,6 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
     }
     SETSTACK(&newp->context, &newp->stack);
 		enqueue(newp, &readyQ);
-		//PUTTOLDC("Head%d", readyQ->Rel_Period_Deadline);
-		//piface_putc('9');
 
     ENABLE();
 
