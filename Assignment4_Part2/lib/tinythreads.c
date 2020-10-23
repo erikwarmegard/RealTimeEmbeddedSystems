@@ -95,17 +95,17 @@ static void enqueue(thread p, thread *queue) {
 			return;
 	}
 	else if((*queue)->Rel_Period_Deadline > p->Rel_Period_Deadline){ //check aginst the head for highest deadline
-		p->next = *queue;
-		*queue = p;
-		return;
+			p->next = *queue;
+			*queue = p;
+			return;
 	}
-	else{ //loop to find where to put it
-		thread q = *queue;
-		while ((q->next !=NULL) && q->next->Rel_Period_Deadline < p->Rel_Period_Deadline){
-			q = q->next;
-		}
-		p->next=q->next;
-		q->next=p;
+	else{
+			thread q = *queue;
+			while ((q->next !=NULL) && q->next->Rel_Period_Deadline < p->Rel_Period_Deadline){
+				q = q->next;
+			}
+			p->next=q->next;
+			q->next=p;
 	}
 }
 
@@ -178,8 +178,6 @@ int findTask(unsigned int deadline, unsigned int rel_deadline, void (* function)
 
 void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (* function)(int), int arg) { //only added 2rows
     // To be implemented!!!
-		//piface_putc('1');
-
 		thread newp;
     DISABLE();
     if (!initialized){ initialize(); }
@@ -283,11 +281,11 @@ void generate_Periodic_Tasks() {
 // Remember, taskQ points to asked that have been spawned
 // You generate tasks according to their period, if the task is not running,
 // or if you not find the task in the readyQ (findTask)
-	//piface_putc('0');
+
 	thread q = taskQ;
 	while(q != NULL){
 		if(ticks % q->Rel_Period_Deadline == 0){
-			//piface_putc('8');
+
 			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) ){ // || !(current==q)
 				q->Period_Deadline+=q->Rel_Period_Deadline;
 				spawnWithDeadline(q->Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg );
@@ -305,7 +303,7 @@ void scheduler_RM(){
     // To be implemented!!!
 		//add to the ready que
 		// if what have the lowest deadline now?
-		//piface_putc('4');
+
 		DISABLE();
 		if(readyQ !=NULL){
 			thread p = dequeue(&readyQ);

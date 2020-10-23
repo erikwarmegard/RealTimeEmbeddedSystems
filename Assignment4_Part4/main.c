@@ -73,7 +73,7 @@ void busy_wait(uint32_t t) {
 
 void computeSomething(int pos) {
     lock(&mute);
-    printAtSeg(pos % 4, "X%d_%d", pos, ticks);
+    printAtSeg(pos % 4, "C%d_%d", pos, ticks);
     busy_wait(100000u);
 
     unlock(&mute);

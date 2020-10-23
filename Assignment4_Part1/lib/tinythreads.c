@@ -119,18 +119,17 @@ void yield(void) {
 
 
 void lock(mutex *m) {
+    DISABLE();
     if(m->locked == 0){ m->locked =1; }
     else if(m->locked >= 1){
-
-      DISABLE();
       enqueue(current, &m->waitQ);
       m->locked = (m->locked) + 1;
       if (readyQ != NULL){
         thread p = dequeue(&readyQ);
         dispatch(p);
       }
-      ENABLE();
     }
+    ENABLE();
 }
 
 void unlock(mutex *m) {
