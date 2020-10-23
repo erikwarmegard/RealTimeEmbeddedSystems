@@ -52,8 +52,8 @@ __attribute__(( always_inline )) static inline void no_operation() {
 // Mutex variable to guard critical sections
 mutex mute = MUTEX_INIT;
 
-//Paste here the code for printAtSeg that you implemented in Assignment 3
 void printAtSeg(int seg, const char* fmt, ...) {
+
   if(seg>3 || seg< 0){ return; }
   va_list args;
   va_start(args, fmt);
@@ -66,16 +66,20 @@ void printAtSeg(int seg, const char* fmt, ...) {
   va_end(args);
 }
 
-void computeSomething(int pos) {
-    lock(&mute);
-    printAtSeg(pos % 4, "Z%d %d", pos, ticks);
-    unlock(&mute);
-}
-
 void busy_wait(uint32_t t) {
     for(volatile uint32_t i=0; i < t; )
         i++;
 }
+
+void computeSomething(int pos) {
+    lock(&mute);
+    printAtSeg(pos % 4, "X%d_%d", pos, ticks);
+    busy_wait(100000u);
+
+    unlock(&mute);
+}
+
+
 
 // @brief The BCM2835 Interupt controller peripheral at it's base address
 static rpi_irq_controller_t* rpiIRQController =
@@ -112,12 +116,14 @@ void initTimerInterrupts()
 
 int main() {
     piface_init();
-
     spawnWithDeadline(3, 3, computeSomething, 0);
     spawnWithDeadline(5, 5, computeSomething, 1);
     spawnWithDeadline(7, 7, computeSomething, 2);
 
+
+
+
     initTimerInterrupts();
-    while (1)
-        no_operation();
+    while (1) no_operation();
+
 }

@@ -94,14 +94,14 @@ static void enqueue(thread p, thread *queue) {
 			*queue = p;
 			return;
 	}
-	else if((*queue)->Rel_Period_Deadline > p->Rel_Period_Deadline){ //check aginst the head for highest deadline
+	else if((*queue)->Period_Deadline > p->Period_Deadline){ //check aginst the head for highest deadline
 		p->next = *queue;
 		*queue = p;
 		return;
 	}
 	else{ //loop to find where to put it
 		thread q = *queue;
-		while ((q->next !=NULL) && q->next->Rel_Period_Deadline < p->Rel_Period_Deadline){
+		while ((q->next !=NULL) && q->next->Period_Deadline < p->Period_Deadline){
 			q = q->next;
 		}
 		p->next=q->next;
@@ -297,30 +297,34 @@ void generate_Periodic_Tasks() {
 	}
 }
 
-void scheduler_RR(){
 
-}
 
-void scheduler_RM(){
-    // To be implemented!!!
-		//add to the ready que
-		// if what have the lowest deadline now?
-		//piface_putc('4');
-		DISABLE();
-		if(readyQ !=NULL){
-			thread p = dequeue(&readyQ);
-			dispatch(p);
-		}
-		ENABLE();
+void sortReadyQ(void){
+	thread newQ =NULL;
+	while(readyQ != NULL){
+
+		enqueue(dequeue(&readyQ), &newQ);
+	}
+
+	while(newQ !=NULL){
+		enqueue(dequeue(&newQ), &readyQ);
+	}
 
 }
 
 void scheduler_EDF(){
 
+	sortReadyQ();
+	DISABLE();
+	if(readyQ !=NULL){
+		thread p = dequeue(&readyQ);
+		dispatch(p);
+	}
+	ENABLE();
 }
 
 void scheduler(){
 	//piface_putc('2');
-    scheduler_RM();
+    scheduler_EDF();
 
 }
