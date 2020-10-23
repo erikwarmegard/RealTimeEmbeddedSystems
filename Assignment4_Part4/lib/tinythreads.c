@@ -302,7 +302,6 @@ void generate_Periodic_Tasks() {
 void sortReadyQ(void){
 	thread newQ =NULL;
 	while(readyQ != NULL){
-
 		enqueue(dequeue(&readyQ), &newQ);
 	}
 
