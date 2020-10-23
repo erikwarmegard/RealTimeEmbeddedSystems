@@ -121,13 +121,7 @@ void yield(void) {
 void lock(mutex *m) {
     if(m->locked == 0){ m->locked =1; }
     else if(m->locked >= 1){
-    /*
-    thread temp =m->waitQ;
-    for(int i=1; i<(m->locked); i++){
-      temp = temp->next;
-    }
-    temp =current;
-    */
+
       DISABLE();
       enqueue(current, &m->waitQ);
       m->locked = (m->locked) + 1;
@@ -144,10 +138,8 @@ void unlock(mutex *m) {
   if(m->locked >=1){
     if(m->waitQ !=NULL){
           DISABLE();
-          //thread temp = m->waitQ;
-          //m->waitQ= m->waitQ->next;
+
           m->locked = (m->locked) - 1;
-          //dispatch(temp);
           thread temp = dequeue(&m->waitQ);
       		enqueue(current, &readyQ);
       		dispatch(temp);
@@ -155,7 +147,6 @@ void unlock(mutex *m) {
     }
     else{m->locked=0;}
   }
-  //else{  m->locked=0; }
 
 }
 
@@ -163,7 +154,6 @@ void generate_Periodic_Tasks(){
 }
 
 void scheduler_RR(){
-  //yield();
   if (readyQ != NULL){
     thread p = dequeue(&readyQ);
     enqueue(current, &readyQ);
@@ -182,10 +172,6 @@ void scheduler_EDF()
 }
 
 void scheduler(){
-	/*
-	while(1) {
-		piface_putc((int)'a');
-	}
-	*/
+
   scheduler_RR();
 }

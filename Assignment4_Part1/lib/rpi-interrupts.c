@@ -99,9 +99,9 @@ void __attribute__((interrupt("IRQ"))) interrupt_vector(void)
            caused us to interrupt */
         ticks++;
         RPI_GetArmTimer()->IRQClear = 1;
-
+        scheduler();
     }
-    scheduler();
+
 }
 
 
