@@ -308,7 +308,6 @@ void sortReadyQ(void){
 }
 
 void scheduler_EDF(){
-
 	sortReadyQ();
 	DISABLE();
 	if(readyQ !=NULL){
