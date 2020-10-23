@@ -123,7 +123,7 @@ static thread removeLast(thread *queue) { //new
 
     thread p = *queue;
 		thread last;
-		if(!(*queue)){ PUTTOLDC("ops22%s", "!!2");	}
+		if(!(*queue)){ PUTTOLDC("ops2%s", "!2");	}
     while (p->next->next) {
         p = p->next;
     }
@@ -203,7 +203,7 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
     if (setjmp(newp->context) == 1) {
         ENABLE();
         current->function(current->arg);
-				while(readyQ==NULL){ }  //suggestion .. and it works not
+				while(readyQ==NULL){ }
         DISABLE();
         enqueue(current, &freeQ);
         dispatch(dequeue(&readyQ));
@@ -275,15 +275,10 @@ int findTaskReadyQ(unsigned int deadline, unsigned int rel_deadline, void (* fun
 }
 
 void generate_Periodic_Tasks() {
-// To be implemented!!!
-// Remember, taskQ points to asked that have been spawned
-// You generate tasks according to their period, if the task is not running,
-// or if you not find the task in the readyQ (findTask)
-	//piface_putc('0');
+
 	thread q = taskQ;
 	while(q != NULL){
 		if(ticks % q->Rel_Period_Deadline == 0){
-			//piface_putc('8');
 			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) ){ // || !(current==q)
 				q->Period_Deadline+=q->Rel_Period_Deadline;
 				spawnWithDeadline(q->Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg );
@@ -318,7 +313,6 @@ void scheduler_EDF(){
 }
 
 void scheduler(){
-	//piface_putc('2');
     scheduler_EDF();
 
 }
