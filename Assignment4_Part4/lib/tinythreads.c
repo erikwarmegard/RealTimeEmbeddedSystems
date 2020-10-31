@@ -88,6 +88,7 @@ static void initialize(void) {
 
 // You might want to change enqueue with insertion sort.
 // Otherwise, you will have to sort the readyQ in selected scheduling algorithm.
+//https://www.geeksforgeeks.org/insertion-sort-for-singly-linked-list/
 static void enqueue(thread p, thread *queue) {
 	p->next = NULL;
 	if (*queue == NULL) { //empty
@@ -101,8 +102,8 @@ static void enqueue(thread p, thread *queue) {
 	}
 	else{ //loop to find where to put it
 		thread q = *queue;
-		while ((q->next !=NULL) && q->next->Period_Deadline < p->Period_Deadline){
-			q = q->next;
+		while ((q->next !=NULL) && q->next->Period_Deadline < p->Period_Deadline){ //iterates until this it not true (which is where we are suppose to insert it)
+			q = q->next; //increment to next threadNode
 		}
 		p->next=q->next;
 		q->next=p;
@@ -119,12 +120,14 @@ static thread dequeue(thread *queue) {
     return p;
 }
 
-static thread removeLast(thread *queue) { //new
+//https://www.geeksforgeeks.org/remove-last-node-of-the-linked-list/
+//(ABOVE:the only difference is that we can simple return the thread insted of the queue)
+static thread removeLast(thread *queue) {
 
     thread p = *queue;
-		thread last;
-		if(!(*queue)){ PUTTOLDC("ops2%s", "!2");	}
-    while (p->next->next) {
+		thread last;			//This is my name (this was copied by Erik lidbäck!)
+		if(!(*queue)){ PUTTOLDC("ops2%s", "!2");	} // testing purpose
+    while (p->next->next) { //gets false when *->next->next==Null
         p = p->next;
     }
 		last =p->next;
@@ -216,13 +219,13 @@ void spawnWithDeadline(unsigned int deadline, unsigned int rel_deadline, void (*
 }
 
 void yield(void) {
-    DISABLE();
+  DISABLE();
 	if (readyQ != NULL){
 		thread p = dequeue(&readyQ);
         enqueue(current, &readyQ);
         dispatch(p);
 	}
-    ENABLE();
+  ENABLE();
 }
 
 void lock(mutex *m) {
@@ -233,8 +236,8 @@ void lock(mutex *m) {
 		enqueue(current, &m->waitQ);
 		m->locked = (m->locked) + 1;
 		if (readyQ != NULL){
-			thread p = dequeue(&readyQ);
-			dispatch(p);
+				thread p = dequeue(&readyQ);
+				dispatch(p);
 		}
 		ENABLE();
 	}
@@ -243,13 +246,13 @@ void lock(mutex *m) {
 void unlock(mutex *m) {
     // Put here the corresponding implementation results from Part 1
 		if(m->locked >=1){
-		if(m->waitQ !=NULL){
-					DISABLE();
-					m->locked = (m->locked) - 1;
-					thread temp = dequeue(&m->waitQ);
-					enqueue(current, &readyQ);
-					dispatch(temp);
-					ENABLE();
+		if(m->waitQ !=NULL){ //this was earlier:  (m->locked <=2) whih is why i use locked to remeber the amoun of stored threads
+				DISABLE();
+				m->locked = (m->locked) - 1;
+				thread temp = dequeue(&m->waitQ);
+				enqueue(current, &readyQ);
+				dispatch(temp);
+				ENABLE();
 		}
 		else{m->locked=0;}
 	}
@@ -281,7 +284,7 @@ void generate_Periodic_Tasks() {
 		if(ticks % q->Rel_Period_Deadline == 0){
 			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) ){ // || !(current==q)
 				q->Period_Deadline+=q->Rel_Period_Deadline;
-				spawnWithDeadline(q->Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg );
+				spawnWithDeadline(q->Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg ); //spawn thread in rdyQ
 			}
 		}
 		q = q->next;
@@ -291,15 +294,15 @@ void generate_Periodic_Tasks() {
 
 
 void sortReadyQ(void){
+	//(this is a very mesy solution that simple does the job! Need minimum space for 6 threads to work)
+	//according to the teacher -to testing is the goal.. and we have (and it works/ solves the task  aacording to what information is given!)
 	thread newQ =NULL;
 	while(readyQ != NULL){
 		enqueue(dequeue(&readyQ), &newQ);
 	}
-
 	while(newQ !=NULL){
 		enqueue(dequeue(&newQ), &readyQ);
 	}
-
 }
 
 void scheduler_EDF(){

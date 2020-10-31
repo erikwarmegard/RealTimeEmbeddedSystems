@@ -48,7 +48,7 @@ int getBit(int i, iRegister *r) {
 	else {
           int theBit = (unsigned int) ((r->content) & ( 1 << i )) >> i; // Mask out the bit, then shift it to the far right so it gets returned as the integer
           if(r == NULL) {
-            // exit(-1); 
+            // exit(-1);
           }
           return theBit;
         }
@@ -60,7 +60,7 @@ void assignNibble(int pos, int value, iRegister *r) {
 	if (r == NULL) return;
 	r->content &= ~(15 << (pos-1) * 4); //removes the old nibble from the register
 	r->content |= (value << (pos-1) * 4); //adds the new nibble
-	if(r == NULL) { 
+	if(r == NULL) {
           // exit(-1);
         }
 }
@@ -70,7 +70,7 @@ int getNibble(int pos, iRegister *r) {
 	if(0 > pos || pos > 9) return NULL;
 	if (r == NULL) return NULL;
 	int theNibble = ((r->content) & ( (unsigned) 15 << (pos-1) * 4 )) >> (pos-1) * 4;
-    if(r == NULL) { 
+    if(r == NULL) {
       // exit(-1);
     }
     return theNibble;
@@ -100,7 +100,7 @@ void shiftRight(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
 	if (r == NULL) return;
     r->content = (unsigned) r->content >> i;  //added unsigned type cast
-	if(r == NULL) { 
+	if(r == NULL) {
           // exit(-1);
         }
 }
@@ -110,7 +110,7 @@ void shiftLeft(int i, iRegister *r) {
 	if (i > 31 || i < 0) return;
 	if (r == NULL) return;
 	r->content = (r->content << i);
-	if(r == NULL) { 
+	if(r == NULL) {
           // exit(-1);
         }
 }
@@ -124,5 +124,5 @@ void resetBit(int i, iRegister *r) {
     theBit = (theBit >> i);
     if(theBit != 0) {
       // exit(-1);
-    }	
+    }
 }

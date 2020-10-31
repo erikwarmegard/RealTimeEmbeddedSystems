@@ -119,8 +119,9 @@ static thread dequeue(thread *queue) {
     return p;
 }
 
-static thread removeLast(thread *queue) { //new
-
+static thread removeLast(thread *queue) {
+ 		//In order to use enqueue with sort we need to be able to remove the last obejct insted of the first one
+		//This is used in spawn to avoid writing over the "thread" we just added.
     thread p = *queue;
 		thread last;
 		if(!(*queue)){ PUTTOLDC("ops22%s", "!!2");	}
@@ -287,8 +288,8 @@ void generate_Periodic_Tasks() {
 		if(ticks % q->Rel_Period_Deadline == 0){
 
 			if(!findTaskReadyQ(q->Period_Deadline, q->Rel_Period_Deadline, q->function, q->arg) ){ // || !(current==q)
-				q->Period_Deadline+=q->Rel_Period_Deadline;
-				spawnWithDeadline(q->Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg );
+				q->Period_Deadline+=q->Rel_Period_Deadline; //this is not necessary but to stay true to the varible (absolute-deadline) it is correct to update it (otherwise i would consider removing it!)
+				spawnWithDeadline(q->Period_Deadline , q->Rel_Period_Deadline, q->function, q->arg ); //spawn thread in rdyQ
 			}
 		}
 		q = q->next;

@@ -133,20 +133,18 @@ void lock(mutex *m) {
 }
 
 void unlock(mutex *m) {
-
+  DISABLE();
   if(m->locked >=1){
     if(m->waitQ !=NULL){
-          DISABLE();
 
-          m->locked = (m->locked) - 1;
-          thread temp = dequeue(&m->waitQ);
-      		enqueue(current, &readyQ);
-      		dispatch(temp);
-          ENABLE();
+        m->locked = (m->locked) - 1;
+        thread temp = dequeue(&m->waitQ);
+      	enqueue(current, &readyQ);
+      	dispatch(temp);
     }
     else{m->locked=0;}
   }
-
+  ENABLE();
 }
 
 void generate_Periodic_Tasks(){
